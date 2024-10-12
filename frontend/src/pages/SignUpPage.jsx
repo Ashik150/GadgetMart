@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import Input from "../components/Input";
-import { Loader, Lock, Mail, User } from "lucide-react";
+import { Loader, Lock, Mail, User, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
@@ -10,6 +10,7 @@ const SignUpPage = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const [showPassword, setShowPassword] = useState(false);
 	const navigate = useNavigate();
 
 	const { signup, error, isLoading } = useAuthStore();
@@ -24,6 +25,11 @@ const SignUpPage = () => {
 			console.log(error);
 		}
 	};
+
+	const toggleShowPassword = () => {
+		setShowPassword((prev) => !prev); // Toggle password visibility
+	};
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -52,13 +58,22 @@ const SignUpPage = () => {
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 					/>
-					<Input
-						icon={Lock}
-						type='password'
-						placeholder='Password'
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-					/>
+					<div className='relative'>
+						<Input
+							icon={Lock}
+							type={showPassword ? 'text' : 'password'}
+							placeholder='Password'
+							value={password}
+							onChange={(e) => setPassword(e.target.value)}
+						/>
+						<button
+							type='button'
+							onClick={toggleShowPassword}
+							className='absolute right-3 top-3'
+						>
+							{showPassword ? <EyeOff className="w-5 h-5 text-white" /> : <Eye className="w-5 h-5 text-white" />}
+						</button>
+					</div>
 					{error && <p className='text-red-500 font-semibold mt-2'>{error}</p>}
 					<PasswordStrengthMeter password={password} />
 
