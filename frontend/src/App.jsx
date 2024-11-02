@@ -9,6 +9,7 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
 
 import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -56,15 +57,6 @@ function App() {
 
   return (
     <div>
-      {/* <Routes>
-			<Route
-					path="/"
-					element={
-                      <HomePage/>
-					}
-
-				/>
-			</Routes> */}
       <div>
         {/* <FloatingShape color='bg-green-500' size='w-64 h-64' top='-5%' left='10%' delay={0} />
 			<FloatingShape color='bg-emerald-500' size='w-48 h-48' top='70%' left='80%' delay={5} />
@@ -76,6 +68,7 @@ function App() {
           <Route path="/best-selling" element={<BestSellingPage />} />
           <Route path="/events" element={<EventsPage />} />
           <Route path="/faq" element={<FAQPage />} />
+          <Route path="/product/:name" element={<ProductDetailsPage />} />
 
           <Route
             path="/dashboard"
