@@ -12,6 +12,8 @@ import { BiMenuAltLeft } from "react-icons/bi";
 import DropDown from "./DropDown";
 import Navbar from "./Navbar";
 import { CgProfile } from "react-icons/cg";
+import Cart from "../Cart/Cart";
+import WishList from "../WishList/WishList";
 // import { useSelector } from "react-import";
 const Header = ({ activeHeading }) => {
   // const { isAuthenticated, user } = useSelector((state) => state.user);
@@ -19,6 +21,8 @@ const Header = ({ activeHeading }) => {
   const [searchData, setSearchData] = useState([]);
   const [active, setActive] = useState(false);
   const [dropDown, setDropDown] = useState(false);
+  const [openCart, setOpenCart] = useState(false);
+  const [openWishlist, setOpenWishlist] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -142,16 +146,20 @@ const Header = ({ activeHeading }) => {
           </div>
           <div className="flex">
             <div className={styles.noramlFlex}>
-              <div className="relative cursor-pointer mr-[15px]">
+              <div className="relative cursor-pointer mr-[15px]"
+              onClick={()=>setOpenWishlist(true)}>
                 <AiOutlineHeart size={30} color="rgb(255 255 255/83%)" />
                 <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
                   0
                 </span>
               </div>
-              <div className="relative cursor-pointer mr-[15px]">
+              <div
+                className="relative cursor-pointer mr-[15px]"
+                onClick={() => setOpenCart(true)}
+              >
                 <AiOutlineShoppingCart size={30} color="rgb(255 255 255/83%)" />
                 <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
-                  0
+                  1
                 </span>
               </div>
               <div className="relative cursor-pointer mr-[15px]">
@@ -160,6 +168,10 @@ const Header = ({ activeHeading }) => {
                 </Link>
               </div>
             </div>
+            {/* Cart popup */}
+            {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
+            {/* wishlist popup */}
+            {openWishlist ? <WishList setOpenWishlist={setOpenWishlist} /> : null}
           </div>
         </div>
       </div>

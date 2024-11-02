@@ -253,7 +253,7 @@ export const navItems = [
     {
       id: 1,
       category:"Computers and Laptops",
-      name: "MacBook pro M2 chipset 256gb ssd 8gb ram space-gray color with apple 1 year warranty",
+      name: "MacBook pro M2 chipset 256gb ssd 8gb ram space gray color with apple 1 year warranty",
       description:
         "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
       image_Url: [
@@ -375,7 +375,7 @@ export const navItems = [
     },
     {
       id: 5,
-      name: "Gaming Headphone Asus Zen X-4210",
+      name: "Gaming Headphone Asus Havit H763d",
       description:
         "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
       image_Url: [
@@ -385,7 +385,7 @@ export const navItems = [
         },
         {
           public_id: "test",
-          url: "https://www.startech.com.bd/image/cache/catalog/headphone/havit/h763d/h763d-02-500x500.jpg",
+          url: "https://www.ultratech.com.bd/image/cache/catalog/headphone/havit/h763d/havit-h763d-gaming-wired-headphone-3-500x500.jpg",
         },
       ],
       shop: {
@@ -412,8 +412,37 @@ export const navItems = [
       stock: 10,
       category:"Headphone"
     },
-    
-   
+    {
+      id: 1,
+      category:"Computers and Laptops",
+      name: "Apple MacBook Air 13 inch M3 Chip (2024) Liquid Retina Display 8GB RAM 256GB SSD ",
+      description:
+        "Product details are a crucial part of any eCommerce website or online marketplace. These details help the potential customers to make an informed decision about the product they are interested in buying. A well-written product description can also be a powerful marketing tool that can help to increase sales.Product details typically include information about the product's features, specifications, dimensions, weight, materials, and other relevant information that can help customers to understand the product better. The product details section should also include high-quality images and videos of the product, as well as customer reviews and ratings.",
+      image_Url: [
+        {
+          public_id: "test",    
+          url: "https://i.ibb.co.com/YdXq1hc/macbook-air-13-inch-m3-midnight-01-500x500.webp",
+        },
+        {
+          public_id: "test",
+          url: "https://i.ibb.co.com/cgMGDpv/macbook-air-13-inch-m3-midnight-02-500x500.webp",
+        },
+      ],
+      shop: {
+        name: "Apple inc.",
+        shop_avatar: {
+          public_id: "test",
+          url: "https://www.hatchwise.com/wp-content/uploads/2022/05/amazon-logo-1024x683.png",
+        },
+        ratings: 4.2,
+      },
+      price: 1200,
+      discount_price: 1100,
+      rating: 4,
+      total_sell: 35,
+      stock: 10,
+    },
+  
    
     // {
     //   id: 6,
