@@ -24,9 +24,6 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-  };
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
@@ -104,7 +101,7 @@ const Header = ({ activeHeading }) => {
             ) : null}
           </div>
           <div className={styles.button}>
-            <Link to="/seller">
+            <Link to="/shop-create">
               <h1 className="text-[#fff] flex items-center">
                 Become seller <IoIosArrowForward className="ml-1" />
               </h1>

@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/floatingShape";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
@@ -10,6 +13,9 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import HomePage from "./pages/HomePage";
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
+import ShopCreatePage from "./pages/ShopCreatePage";
+import SellerActivationPage from "./pages/SellerActivationPage";
+import ShopLoginPage from "./pages/ShopLoginPage.jsx";
 
 import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -69,7 +75,12 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/product/:name" element={<ProductDetailsPage />} />
-
+          <Route path="/shop-create" element={<ShopCreatePage />} />
+          <Route path="/shop-login" element={<ShopLoginPage />} />
+          <Route
+          path="/seller/activation/:activation_token"
+          element={<SellerActivationPage />}
+        />
           <Route
             path="/dashboard"
             element={
@@ -115,6 +126,18 @@ function App() {
           {/* catch all routes */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
         <Toaster />
       </div>
     </div>
