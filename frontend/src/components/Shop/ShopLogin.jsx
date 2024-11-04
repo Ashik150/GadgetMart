@@ -7,6 +7,7 @@ import { server } from "../../server";
 import { toast } from "react-toastify";
 import FloatingShape from "../floatingShape";
 
+
 const ShopLogin = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");

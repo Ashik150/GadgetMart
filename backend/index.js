@@ -18,7 +18,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.use("/api/auth",authRoutes);
+app.use("/api/user",authRoutes);
 app.use("/api/shop",shopRoutes);
 
 app.listen(PORT, () => {

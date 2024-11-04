@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/floatingShape";
+import React, { useState } from "react";
+import axios from "axios";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +17,9 @@ import ProductsPage from "./pages/ProductsPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
 import ShopCreatePage from "./pages/ShopCreatePage";
 import SellerActivationPage from "./pages/SellerActivationPage";
+import ShopHomePage from "./pages/Shop/ShopHomePage";
 import ShopLoginPage from "./pages/ShopLoginPage.jsx";
+
 
 import LoadingSpinner from "./components/LoadingSpinner";
 
@@ -25,6 +29,12 @@ import { useEffect } from "react";
 import BestSellingPage from "./pages/BestSellingPage";
 import EventsPage from "./pages/EventsPage";
 import FAQPage from "./pages/FAQPage";
+import { server } from "./server";
+import { loadSeller, loadUser } from "./redux/actions/user";
+import Store from "./redux/store";
+import { useSelector } from "react-redux";
+
+
 
 // protect routes that require authentication
 const ProtectedRoute = ({ children }) => {
@@ -41,6 +51,15 @@ const ProtectedRoute = ({ children }) => {
   return children;
 };
 
+const SellerProtectedRoute = ({ isSeller, children }) => {
+  if (!isSeller) {
+    return <Navigate to={`/`} replace />;
+  }
+
+  return children;
+};
+
+
 // redirect authenticated users to the home page
 const RedirectAuthenticatedUser = ({ children }) => {
   const { isAuthenticated, user } = useAuthStore();
@@ -54,9 +73,12 @@ const RedirectAuthenticatedUser = ({ children }) => {
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
+  const { isSeller} = useSelector((state) => state.seller);
 
   useEffect(() => {
     checkAuth();
+    //Store.dispatch(loadUser());
+    Store.dispatch(loadSeller());
   }, [checkAuth]);
 
   if (isCheckingAuth) return <LoadingSpinner />;
@@ -75,12 +97,19 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/product/:name" element={<ProductDetailsPage />} />
+
+
           <Route path="/shop-create" element={<ShopCreatePage />} />
           <Route path="/shop-login" element={<ShopLoginPage />} />
+          <Route path="/shop/:id" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopHomePage />
+            </SellerProtectedRoute>
+          } />
           <Route
-          path="/seller/activation/:activation_token"
-          element={<SellerActivationPage />}
-        />
+            path="/seller/activation/:activation_token"
+            element={<SellerActivationPage />}
+          />
           <Route
             path="/dashboard"
             element={
@@ -127,17 +156,17 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <ToastContainer
-        position="bottom-center"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
+          position="bottom-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
         <Toaster />
       </div>
     </div>

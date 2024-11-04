@@ -119,6 +119,7 @@ export const loginShop = async (req, res, next) => {
 
 export const getSeller = async (req, res, next) => {
     try {
+        //console.log(req.seller);
         const seller = await Shop.findById(req.seller._id);
 
         if (!seller) {
