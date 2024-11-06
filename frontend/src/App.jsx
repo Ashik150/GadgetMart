@@ -19,9 +19,13 @@ import ShopCreatePage from "./pages/ShopCreatePage";
 import SellerActivationPage from "./pages/SellerActivationPage";
 import ShopHomePage from "./pages/Shop/ShopHomePage";
 import ShopLoginPage from "./pages/ShopLoginPage.jsx";
+import ShopDashboardPage from "./pages/Shop/ShopDashboardPage";
+import ShopCreateProduct from "./pages/Shop/ShopCreateProduct";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
+//import SellerProtectedRoute from "./routes/SellerProtectedRoute.js";
+import Loader from "./components/Layout/Loader";
 
 import { Toaster } from "react-hot-toast";
 import { useAuthStore } from "./store/authStore";
@@ -53,9 +57,8 @@ const ProtectedRoute = ({ children }) => {
 
 const SellerProtectedRoute = ({ isSeller, children }) => {
   if (!isSeller) {
-    return <Navigate to={`/`} replace />;
+    return <Navigate to={`/shop-login`} replace />;
   }
-
   return children;
 };
 
@@ -101,6 +104,16 @@ function App() {
 
           <Route path="/shop-create" element={<ShopCreatePage />} />
           <Route path="/shop-login" element={<ShopLoginPage />} />
+          <Route path="/shopdashboard" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopDashboardPage />
+            </SellerProtectedRoute>
+          } />
+          <Route path="/shopdashboard-create-product" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopCreateProduct/>
+            </SellerProtectedRoute>
+          } />
           <Route path="/shop/:id" element={
             <SellerProtectedRoute isSeller={isSeller}>
               <ShopHomePage />
