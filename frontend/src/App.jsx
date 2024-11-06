@@ -19,6 +19,7 @@ import ShopCreatePage from "./pages/ShopCreatePage";
 import SellerActivationPage from "./pages/SellerActivationPage";
 import ShopHomePage from "./pages/Shop/ShopHomePage";
 import ShopLoginPage from "./pages/ShopLoginPage.jsx";
+import ProfilePage from "./pages/ProfilePage";
 import ShopDashboardPage from "./pages/Shop/ShopDashboardPage";
 import ShopCreateProduct from "./pages/Shop/ShopCreateProduct";
 
@@ -100,25 +101,25 @@ function App() {
           <Route path="/events" element={<EventsPage />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/product/:name" element={<ProductDetailsPage />} />
-
+          <Route
+            path="profilepage"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/shop-create" element={<ShopCreatePage />} />
           <Route path="/shop-login" element={<ShopLoginPage />} />
-          <Route path="/shopdashboard" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopDashboardPage />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-create-product" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopCreateProduct/>
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shop/:id" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopHomePage />
-            </SellerProtectedRoute>
-          } />
+          <Route
+            path="/shop/:id"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopHomePage />
+              </SellerProtectedRoute>
+            }
+          />
           <Route
             path="/seller/activation/:activation_token"
             element={<SellerActivationPage />}

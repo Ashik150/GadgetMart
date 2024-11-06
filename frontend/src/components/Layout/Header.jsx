@@ -160,7 +160,7 @@ const Header = ({ activeHeading }) => {
                 </span>
               </div>
               <div className="relative cursor-pointer mr-[15px]">
-                <Link to="/dashboard">
+                <Link to="/profilepage">
                   <CgProfile size={30} color="rgb(255 255 255/83%)" />
                 </Link>
               </div>
