@@ -77,7 +77,7 @@ const RedirectAuthenticatedUser = ({ children }) => {
 
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
-  const { isSeller} = useSelector((state) => state.seller);
+  const { isSeller } = useSelector((state) => state.seller);
 
   useEffect(() => {
     checkAuth();
@@ -112,6 +112,16 @@ function App() {
 
           <Route path="/shop-create" element={<ShopCreatePage />} />
           <Route path="/shop-login" element={<ShopLoginPage />} />
+          <Route path="/shopdashboard" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopDashboardPage />
+            </SellerProtectedRoute>
+          } />
+          <Route path="/shopdashboard-create-product" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopCreateProduct />
+            </SellerProtectedRoute>
+          } />
           <Route
             path="/shop/:id"
             element={
