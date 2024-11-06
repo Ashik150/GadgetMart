@@ -63,14 +63,14 @@ const ProductCard = ({ data }) => {
           </div>
           <div className="py-2 flex items-center justify-between">
             <div className="flex">
-              <h5 className={styles.productDiscountPrice}>
-                ${data.price === 0 ? data.price : data.discount_price}
-              </h5>
-              <h4 className={styles.price}>
-                { data.price ? "$" + data.price : null}
-              </h4>
+              <h3 className={`${styles.productDiscountPrice} text-[12px]`}>
+                BDT {data.price === 0 ? data.price : data.discount_price}
+              </h3>
+              <h3 className={styles.price}>
+                {data.price ? "BDT " + data.price : null}
+              </h3>
             </div>
-            <span className="font-[400] text-[17px] text-[#68d284]">
+            <span className="font-[400] text-[17px] text-[#68d284] flex">
               {data.total_sell} Sold
             </span>
           </div>

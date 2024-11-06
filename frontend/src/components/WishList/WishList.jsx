@@ -9,20 +9,20 @@ import { AiOutlineHeart } from "react-icons/ai";
 const WishList = ({ setOpenWishlist }) => {
   const cartData = [
     {
-      name: "Iphone 14 pro max 256 ssd and 8gb ram silver colour",
+      name: "MacBook pro M2 chipset 256gb ssd 8gb ram space gray color",
       description: "Test",
-      price: 999,
+      price: 120000,
     },
 
     {
-      name: "Iphone 14 pro max 256 ssd and 8gb ram silver colour",
+      name: "MacBook pro M2 chipset 256gb ssd 8gb ram space gray color",
       description: "Test",
-      price: 245,
+      price: 120000,
     },
     {
-      name: "Iphone 14 pro max 256 ssd and 8gb ram silver colour",
+      name: "MacBook pro M2 chipset 256gb ssd 8gb ram space gray color",
       description: "Test",
-      price: 645,
+      price: 120000,
     },
   ];
   return (
@@ -62,22 +62,21 @@ const CartSingle = ({ data }) => {
       <div className="w-full flex items-center">
         <RxCross1 className="cursor-pointer" />
         <img
-          src="https://m.media-amazon.com/images/I/31Vle5fVdaL.jpg"
+          src="https://cdn.shopify.com/s/files/1/1706/9177/products/NEWAppleMacbookProwithM1ProChip14InchLaptop2021ModelMKGQ3LL_A_16GB_1TBSSD_custommacbd.jpg?v=1659592838"
           alt=""
           className="w-[80px] h-[80px] ml-2"
         />
-       
 
         <div className="pl-[5px]">
           <h5>{data.name}</h5>
-          
+
           <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
-            US${totalPrice}
+            BDT {totalPrice}
           </h4>
         </div>
-            <div>
-                <BsCartPlus size={20} className="cursor-pointer" tile="Add to cart"/>
-            </div>
+        <div>
+          <BsCartPlus size={20} className="cursor-pointer" tile="Add to cart" />
+        </div>
       </div>
     </div>
   );
