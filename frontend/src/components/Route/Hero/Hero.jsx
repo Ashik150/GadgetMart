@@ -12,12 +12,10 @@ const Hero = () => {
       }}
     >
       <div className={`${styles.section} w-[90%] 800px:w-[60%]`}>
-        <h1 className="text-[35px] leading-[1.2] 800px:text-[60px] text-[#4B5320] font-[600] capitalize">
-          Welcome to
-          <br />
+        <h1 className="text-[35px] leading-[1.2] 800px:text-[60px] text-[#3d3a3a] font-[600] capitalize">
           Gadget Mart
         </h1>
-        <p className="pt-5 text-[16px] font-400 text-[#006A4E]">
+        <p className="pt-5 text-[16px] font-[Poppins] font-[400] text-[#000000ba]                      ">
           Whether you're building your dream PC, upgrading your gear, or looking
           for the latest gadgets, we've got everything <br />
           you need from powerful GPUs to sleek monitors, top of the line RAM,

@@ -9,13 +9,13 @@ const Cart = ({ setOpenCart }) => {
     {
       name: "Iphone 14 pro max 256 ssd and 8gb ram silver colour",
       description: "Test",
-      price: 999,
+      price: 80000,
     },
 
     {
       name: "Iphone 14 pro max 256 ssd and 8gb ram silver colour",
       description: "Test",
-      price: 245,
+      price: 120000,
     },
     {
       name: "Iphone 14 pro max 256 ssd and 8gb ram silver colour",
@@ -73,16 +73,21 @@ const CartSingle = ({ data }) => {
             <HiOutlineMinus size={16} color="#7d879c" />
           </div>
         </div>
-        <img src="https://m.media-amazon.com/images/I/31Vle5fVdaL.jpg" alt="" 
-        className="w-[80px] h-[80px] ml-2"/>
+        <img
+          src="https://m.media-amazon.com/images/I/31Vle5fVdaL.jpg"
+          alt=""
+          className="w-[80px] h-[80px] ml-2"
+      />
         <div className="pl-[5px]">
-             <h5>{data.name}</h5> 
-             <h4 className="font-[400px] text-[15px] text-[#00000082]">${data.price}*{value}</h4>  
-             <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
-                US${totalPrice}
-             </h4>
+          <h5>{data.name}</h5>
+          <h4 className="font-[400px] text-[15px] text-[#00000082]">
+            BDT {data.price}*{value}
+          </h4>
+          <h4 className="font-[600] text-[17px] pt-[3px] text-[#d02222] font-Roboto">
+            BDT {totalPrice}
+          </h4>
         </div>
-        <RxCross1 className="cursor-pointer"/>
+        <RxCross1 className="cursor-pointer" />
       </div>
     </div>
   );
