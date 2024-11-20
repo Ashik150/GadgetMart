@@ -6,11 +6,11 @@ import { useDispatch } from 'react-redux'
 import { categoriesData } from "../../static/data";
 import { toast } from "react-toastify";
 import { set } from 'mongoose';
-
-//import { createProduct } from "../../redux/actions/product";
+import { createProduct } from "../../redux/actions/product";
 
 const CreateProduct = () => {
     const { seller } = useSelector((state) => state.seller);
+    const { error, success } = useSelector((state) => state.products);
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
@@ -23,15 +23,63 @@ const CreateProduct = () => {
     const [discountPrice, setDiscountPrice] = useState();
     const [stock, setStock] = useState();
 
-    const handleImageChange = (e) => {
-        e.preventDefault();
+    useEffect(() => {
+        if (error) {
+            toast.error(error);
+        }
+        if (success) {
+            toast.success("Product created successfully!");
+            navigate("/shopdashboard");
+            window.location.reload();
+        }
+    }, [dispatch, error, success]);
 
-        let files = Array.from(e.target.files);
-        setImages((prevImages) => [...prevImages, ...files]);
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+
+        //setImages([]);
+
+        files.forEach((file) => {
+            const reader = new FileReader();
+
+            reader.onload = () => {
+                if (reader.readyState === 2) {
+                    setImages((old) => [...old, reader.result]);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
     }
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        const newForm = new FormData();
+
+        images.forEach((image) => {
+            newForm.set("images", image);
+        });
+        newForm.append("name", name);
+        newForm.append("description", description);
+        newForm.append("category", category);
+        newForm.append("tags", tags);
+        newForm.append("originalPrice", originalPrice);
+        newForm.append("discountPrice", discountPrice);
+        newForm.append("stock", stock);
+        newForm.append("shopId", seller._id);
+        dispatch(
+            createProduct({
+                name,
+                description,
+                category,
+                tags,
+                originalPrice,
+                discountPrice,
+                stock,
+                shopId: seller._id,
+                images,
+            })
+        );
     }
 
     return (
@@ -161,7 +209,7 @@ const CreateProduct = () => {
                         {images &&
                             images.map((i) => (
                                 <img
-                                    src={URL.createObjectURL(i)}
+                                    src={i}
                                     key={i}
                                     alt=""
                                     className="h-[120px] w-[120px] object-cover m-2"
