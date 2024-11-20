@@ -6,7 +6,8 @@ import cookieParser from 'cookie-parser';
 import { connection } from './db/connection.js';
 import authRoutes from './routes/auth.route.js';
 import shopRoutes from './routes/shop.route.js';
-//import productRoutes from './routes/product.route.js';
+import productRoutes from './routes/product.route.js';
+import cloudinary from 'cloudinary';
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,12 @@ app.use(cors({
     credentials: true,
 }));
 
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,7 +32,7 @@ app.use("/",express.static("uploads"));
 
 app.use("/api/user",authRoutes);
 app.use("/api/shop",shopRoutes);
-//app.use("/api/product",productRoutes);
+app.use("/api/product",productRoutes);
 
 app.listen(PORT, () => {
     connection();
