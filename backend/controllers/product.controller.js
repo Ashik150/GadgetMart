@@ -1,6 +1,7 @@
-import {Product} from '../models/product.model';
-import { Shop } from '../models/shop.model';
-import ErrorHandler from '../Utils/errorHandler';
+import cloudinary from 'cloudinary';
+import  {Product}  from '../models/product.model.js';
+import { Shop } from '../models/shop.model.js';
+import ErrorHandler from '../Utils/ErrorHandler.js';
 
 export const createProduct = async (req, res, next) => {
     try {
@@ -9,13 +10,33 @@ export const createProduct = async (req, res, next) => {
         if (!shop) {
             return next(new ErrorHandler('Shop not found', 400));
         } else {
-            const files = req.files;
-            const imageUrls = files.map((file) => `${file.fileName}`);
+            let images = [];
+
+            if (typeof req.body.images === "string") {
+                images.push(req.body.images);
+            } else {
+                images = req.body.images;
+            }
+
+            const imagesLinks = [];
+
+            for (let i = 0; i < images.length; i++) {
+                const result = await cloudinary.uploader.upload(images[i], {
+                    folder: "products",
+                });
+
+                imagesLinks.push({
+                    public_id: result.public_id,
+                    url: result.secure_url,
+                });
+            }
+
             const productData = req.body;
-            productData.images = imageUrls;
+            productData.images = imagesLinks;
             productData.shop = shop;
 
             const product = await Product.create(productData);
+
             res.status(201).json({
                 success: true,
                 product,
@@ -25,4 +46,4 @@ export const createProduct = async (req, res, next) => {
     } catch (error) {
         return next(new ErrorHandler(error.message, 400));
     }
-}
+};
