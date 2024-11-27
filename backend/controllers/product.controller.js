@@ -1,5 +1,5 @@
 import cloudinary from 'cloudinary';
-import  {Product}  from '../models/product.model.js';
+import { Product } from '../models/product.model.js';
 import { Shop } from '../models/shop.model.js';
 import ErrorHandler from '../Utils/ErrorHandler.js';
 
@@ -50,7 +50,7 @@ export const createProduct = async (req, res, next) => {
 
 export const getProducts = async (req, res, next) => {
     try {
-        const products = await Product.find({shopId: req.params.id});
+        const products = await Product.find({ shopId: req.params.id });
 
         res.status(200).json({
             success: true,
@@ -60,3 +60,29 @@ export const getProducts = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 400));
     }
 };
+
+export const deleteProduct = async (req, res, next) => {
+    try {
+        const product = await Product.findByIdAndDelete(req.params.id);
+
+        if (!product) {
+            return next(new ErrorHandler('Product not found', 400));
+        }
+
+        for (let i = 0; 1 < product.images.length; i++) {
+            const result = await cloudinary.uploader.destroy(
+                product.images[i].public_id
+            );
+        }
+
+        //await product.remove();
+
+        res.status(200).json({
+            success: true,
+            message: 'Product deleted successfully',
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+};
+
