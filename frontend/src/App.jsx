@@ -22,6 +22,7 @@ import ShopLoginPage from "./pages/ShopLoginPage.jsx";
 import ProfilePage from "./pages/ProfilePage";
 import ShopDashboardPage from "./pages/Shop/ShopDashboardPage";
 import ShopCreateProduct from "./pages/Shop/ShopCreateProduct";
+import ShopAllProducts from "./pages/Shop/ShopAllProducts";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -120,6 +121,11 @@ function App() {
           <Route path="/shopdashboard-create-product" element={
             <SellerProtectedRoute isSeller={isSeller}>
               <ShopCreateProduct />
+            </SellerProtectedRoute>
+          } />
+          <Route path="/shopdashboard-products" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopAllProducts />
             </SellerProtectedRoute>
           } />
           <Route

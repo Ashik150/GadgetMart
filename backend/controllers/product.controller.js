@@ -47,3 +47,16 @@ export const createProduct = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 400));
     }
 };
+
+export const getProducts = async (req, res, next) => {
+    try {
+        const products = await Product.find({shopId: req.params.id});
+
+        res.status(200).json({
+            success: true,
+            products,
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+};

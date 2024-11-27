@@ -22,30 +22,30 @@ export const productReducer = createReducer(initialState, (builder) => {
     })
 
     // Get All Products of Shop
-    // .addCase('getAllProductsShopRequest', (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase('getAllProductsShopSuccess', (state, action) => {
-    //   state.isLoading = false;
-    //   state.products = action.payload;
-    // })
-    // .addCase('getAllProductsShopFailed', (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // })
+    .addCase('getAllProductsShopRequest', (state) => {
+      state.isLoading = true;
+    })
+    .addCase('getAllProductsShopSuccess', (state, action) => {
+      state.isLoading = false;
+      state.products = action.payload;
+    })
+    .addCase('getAllProductsShopFailed', (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    })
 
     // Delete Product of Shop
-    // .addCase('deleteProductRequest', (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase('deleteProductSuccess', (state, action) => {
-    //   state.isLoading = false;
-    //   state.message = action.payload;
-    // })
-    // .addCase('deleteProductFailed', (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // })
+    .addCase('deleteProductRequest', (state) => {
+      state.isLoading = true;
+    })
+    .addCase('deleteProductSuccess', (state, action) => {
+      state.isLoading = false;
+      state.message = action.payload;
+    })
+    .addCase('deleteProductFailed', (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    })
 
     // Get All Products
     // .addCase('getAllProductsRequest', (state) => {
