@@ -7,6 +7,7 @@ import { connection } from './db/connection.js';
 import authRoutes from './routes/auth.route.js';
 import shopRoutes from './routes/shop.route.js';
 import productRoutes from './routes/product.route.js';
+import eventRoutes from './routes/event.route.js';
 import cloudinary from 'cloudinary';
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use("/",express.static("uploads"));
 app.use("/api/user",authRoutes);
 app.use("/api/shop",shopRoutes);
 app.use("/api/product",productRoutes);
+app.use("/api/event",eventRoutes);
 
 app.listen(PORT, () => {
     connection();

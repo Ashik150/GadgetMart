@@ -23,6 +23,7 @@ import ProfilePage from "./pages/ProfilePage";
 import ShopDashboardPage from "./pages/Shop/ShopDashboardPage";
 import ShopCreateProduct from "./pages/Shop/ShopCreateProduct";
 import ShopAllProducts from "./pages/Shop/ShopAllProducts";
+import ShopCreateEvents from "./pages/Shop/ShopCreateEvents";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -121,6 +122,11 @@ function App() {
           <Route path="/shopdashboard-create-product" element={
             <SellerProtectedRoute isSeller={isSeller}>
               <ShopCreateProduct />
+            </SellerProtectedRoute>
+          } />
+          <Route path="/shopdashboard-create-event" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopCreateEvents />
             </SellerProtectedRoute>
           } />
           <Route path="/shopdashboard-products" element={
