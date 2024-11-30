@@ -24,6 +24,7 @@ import ShopDashboardPage from "./pages/Shop/ShopDashboardPage";
 import ShopCreateProduct from "./pages/Shop/ShopCreateProduct";
 import ShopAllProducts from "./pages/Shop/ShopAllProducts";
 import ShopCreateEvents from "./pages/Shop/ShopCreateEvents";
+import ShopAllEvents from "./pages/Shop/ShopAllEvents";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -132,6 +133,11 @@ function App() {
           <Route path="/shopdashboard-products" element={
             <SellerProtectedRoute isSeller={isSeller}>
               <ShopAllProducts />
+            </SellerProtectedRoute>
+          } />
+          <Route path="/shopdashboard-events" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopAllEvents />
             </SellerProtectedRoute>
           } />
           <Route
