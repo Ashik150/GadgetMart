@@ -69,10 +69,12 @@ const CreateEvent = () => {
             toast.error(error);
         }
         if (success) {
-            toast.success("Event created successfully!");
-            console.log("success");
+            toast.success("Event created successfully!",{autoClose: 2000});
+
+            setTimeout(() => {
             navigate("/shopdashboard");
             window.location.reload();
+            }, 2000);
         }
     }, [dispatch, error, success]);
 

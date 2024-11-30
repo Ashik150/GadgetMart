@@ -28,9 +28,12 @@ const CreateProduct = () => {
             toast.error(error);
         }
         if (success) {
-            toast.success("Product created successfully!");
+            toast.success("Product created successfully!",{autoClose: 2000});
+
+            setTimeout(() => {
             navigate("/shopdashboard");
             window.location.reload();
+            }, 2000);
         }
     }, [dispatch, error, success]);
 
