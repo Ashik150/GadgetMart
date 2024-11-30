@@ -70,6 +70,7 @@ const CreateEvent = () => {
         }
         if (success) {
             toast.success("Event created successfully!");
+            console.log("success");
             navigate("/shopdashboard");
             window.location.reload();
         }
