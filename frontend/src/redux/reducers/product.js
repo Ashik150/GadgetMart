@@ -47,18 +47,18 @@ export const productReducer = createReducer(initialState, (builder) => {
       state.error = action.payload;
     })
 
-    // Get All Products
-    // .addCase('getAllProductsRequest', (state) => {
-    //   state.isLoading = true;
-    // })
-    // .addCase('getAllProductsSuccess', (state, action) => {
-    //   state.isLoading = false;
-    //   state.allProducts = action.payload;
-    // })
-    // .addCase('getAllProductsFailed', (state, action) => {
-    //   state.isLoading = false;
-    //   state.error = action.payload;
-    // })
+    //Get All Products
+    .addCase('getAllProductsRequest', (state) => {
+      state.isLoading = true;
+    })
+    .addCase('getAllProductsSuccess', (state, action) => {
+      state.isLoading = false;
+      state.allProducts = action.payload;
+    })
+    .addCase('getAllProductsFailed', (state, action) => {
+      state.isLoading = false;
+      state.error = action.payload;
+    })
 
     // Clear Errors
     .addCase('clearErrors', (state) => {
