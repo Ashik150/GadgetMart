@@ -43,30 +43,24 @@ const ProductDetails = ({ data }) => {
                   className="w-[80%]"
                 />
                 <div className="w-full flex">
+                  {data &&
+                    data.images.map((i, index) => (
+                      <div
+                        className={`${select === 0 ? "border" : "null"
+                          } cursor-pointer`}
+                      >
+                        <img
+                          src={`${i?.url}`}
+                          alt=""
+                          className="h-[200px] overflow-hidden mr-3 mt-3"
+                          onClick={() => setSelect(index)}
+                        />
+                      </div>
+                    ))}
                   <div
-                    className={`${
-                      select === 0 ? "border" : "null"
-                    } cursor-pointer`}
-                  >
-                    <img
-                      src={`${backend_url}${data.images && data.images[0]}`}
-                      alt=""
-                      className="h-[200px]"
-                      onClick={() => setSelect(0)}
-                    />
-                  </div>
-                  <div
-                    className={`${
-                      select === 1 ? "border" : "null"
-                    } cursor-pointer`}
-                  >
-                    <img
-                      src={`${backend_url}${data.images && data.images[0]}`}
-                      alt=""
-                      className="h-[200px]"
-                      onClick={() => setSelect(1)}
-                    />
-                  </div>
+                    className={`${select === 1 ? "border" : "null"
+                      } cursor-pointer`}
+                  ></div>
                 </div>
               </div>
               <div className="w-full 800px:w-[50%] pt-5">
@@ -156,7 +150,7 @@ const ProductDetails = ({ data }) => {
     </div>
   );
 };
-const ProductDetailsInfo = ({data}) => {
+const ProductDetailsInfo = ({ data }) => {
   const [active, setActive] = useState(1);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded  ">
@@ -278,9 +272,9 @@ const ProductDetailsInfo = ({data}) => {
                 Total Reviews/: <span className="font-[500]">324</span>
               </h5>
               <Link to="/">
-              <div className={`${styles.button} rounded-[4px] h-[39.5px] mt-3`}>
-                <h4 className="text-white">Visit Shop</h4>
-              </div>
+                <div className={`${styles.button} rounded-[4px] h-[39.5px] mt-3`}>
+                  <h4 className="text-white">Visit Shop</h4>
+                </div>
               </Link>
             </div>
           </div>
