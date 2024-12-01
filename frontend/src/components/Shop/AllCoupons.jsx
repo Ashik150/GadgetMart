@@ -15,7 +15,7 @@ const AllCoupons = () => {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [coupons,setCoupons] = useState([]);
+  const [coupons, setCoupons] = useState([]);
   const [minAmount, setMinAmout] = useState(null);
   const [maxAmount, setMaxAmount] = useState(null);
   const [selectedProducts, setSelectedProducts] = useState(null);
@@ -41,10 +41,10 @@ const AllCoupons = () => {
   }, [dispatch]);
 
   const handleDelete = async (id) => {
-    axios.delete(`${server}/coupon/delete-coupon/${id}`,{withCredentials: true}).then((res) => {
-      toast.success("Coupon code deleted succesfully!",{autoClose: 2000});
+    axios.delete(`${server}/coupon/delete-coupon/${id}`, { withCredentials: true }).then((res) => {
+      toast.success("Coupon code deleted succesfully!", { autoClose: 2000 });
       setTimeout(() => {
-        window.location.reload();
+        setCoupons((prevCoupons) => prevCoupons.filter((coupon) => coupon._id !== id));
       }, 2000);
     })
   };
@@ -66,10 +66,11 @@ const AllCoupons = () => {
         { withCredentials: true }
       )
       .then((res) => {
-       toast.success("Coupon code created successfully!",{autoClose: 2000});
-       setOpen(false);
+        toast.success("Coupon code created successfully!", { autoClose: 2000 });
+        setOpen(false);
         setTimeout(() => {
-       window.location.reload();},2000);
+          window.location.reload();
+        }, 2000);
       })
       .catch((error) => {
         toast.error(error.response.data.message);
@@ -112,7 +113,7 @@ const AllCoupons = () => {
   const row = [];
 
   coupons &&
-  coupons.forEach((item) => {
+    coupons.forEach((item) => {
       row.push({
         id: item._id,
         name: item.name,
