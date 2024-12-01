@@ -4,26 +4,35 @@ import ProductDetails from '../components/Products/ProductDetails'
 import Footer from '../components/Layout/Footer'
 import { useParams } from 'react-router-dom'
 import { productData } from '../static/data'
+import { useSelector } from 'react-redux'
 import SuggestedProduct from '../components/Products/SuggestedProduct'
 
 const ProductDetailsPage = () => {
-    const {name}=useParams();
-    const [data,setData]=useState(null);
-    const productName=name.replace(/-/g," ");
 
+  const { products } = useSelector((state) => state.products);
+  console.log("Products are", products);
+  const { id } = useParams();
+  const [data, setData] = useState(null);
+  //const productName = name.replace(/-/g, " ").toLowerCase();
+  //console.log("Product Name is", productName);
 
-    useEffect(()=>{
-        const data=productData.find((i)=> i.name === productName);
-        setData(data);
-    },[])
+  useEffect(() => {
+    const data2 = products.find((i) => i._id === id);
+    // const x = products.find((i)=>{
+    //   console.log("Product id is", id);
+    //   console.log("Product2 id is", i._id);
+    //   return i._id === id;
+    // })
+    setData(data2);
+  }, [products, id]);
   return (
     <div>
-        <Header/>
-        <ProductDetails data={data}/>
-        {
-          data && <SuggestedProduct data={data}/>
-        }
-        <Footer/>
+      <Header />
+      <ProductDetails data={data} />
+      {
+        data && <SuggestedProduct data={data} />
+      }
+      <Footer />
     </div>
   )
 }

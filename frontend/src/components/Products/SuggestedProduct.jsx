@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
-
+import { useSelector } from "react-redux";
 import { productData } from "../../static/data";
 import styles from "../../styles/styles";
 import ProductCard from "../Route/ProductCard/ProductCard";
 
-const SuggestedProduct = ({data}) => {
-    const [products, setProducts] = useState(null);
+const SuggestedProduct = ({ data }) => {
+  const {products} = useSelector((state) => state.products); 
+  const [productData, setProducts] = useState([]);
 
-     useEffect(() => {
-       const d =
-         productData && productData.filter((i) => i.category === data.category);
-       setProducts(d);
-     }, []);
+  useEffect(() => {
+    const d =
+    products && products.filter((i) => i.category === data.category);
+    setProducts(d);
+  }, []);
 
-  return (
+  return (  
     <div>
       {data ? (
         <div className={`p-4 ${styles.section}`}>
@@ -22,12 +23,13 @@ const SuggestedProduct = ({data}) => {
           >
             Related Product
           </h2>
-          <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12 bg-gray-50">
-            {products &&
-              products.map((i, index) => (
-                <ProductCard data={i} key={index} />
-              ))}
-          </div>
+          <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-4 lg:gap-[25px] xl:grid-cols-5 xl:gap-[30px] mb-12">
+             {
+                productData && productData.map((i,index) => (
+                    <ProductCard data={i} key={index} />
+                ))
+             }
+      </div>
         </div>
       ) : null}
     </div>

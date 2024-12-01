@@ -60,6 +60,7 @@ const ProductCard = ({ data,isEvent }) => {
   //   }
   // };
 
+  const productName = data?.name.replace(/\s+/g, '-').toLowerCase();
   return (
     <>
       <div className="w-full h-[370px] bg-white rounded-lg shadow-sm p-3 relative cursor-pointer">

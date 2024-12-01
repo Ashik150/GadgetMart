@@ -86,3 +86,19 @@ export const deleteProduct = async (req, res, next) => {
     }
 };
 
+export const getAllProduct = async (req, res, next) => {
+    try {
+        const products = await Product.find().sort({ createdAt: -1 });
+        if (!products || products.length === 0) {
+            return next(new ErrorHandler('No products found', 404));  // Error if no products found
+        }
+
+        res.status(200).json({
+            success: true,
+            products,
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+};
+

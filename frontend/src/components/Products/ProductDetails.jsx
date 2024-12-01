@@ -8,11 +8,13 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { backend_url } from "../../server";
 
 const ProductDetails = ({ data }) => {
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(1);
+  const navigate = useNavigate();
 
   const decrementCount = () => {
     if (count > 1) {
@@ -28,7 +30,6 @@ const ProductDetails = ({ data }) => {
     navigate("/inbox?conversation=507sjghslfjwgsssdfh84");
   };
 
-  const navigate = useNavigate();
   return (
     <div className="bg-white">
       {data ? (
@@ -37,7 +38,7 @@ const ProductDetails = ({ data }) => {
             <div className="block w-full 800px:flex">
               <div className="w-full 800px:w-[50%]">
                 <img
-                  src={data.image_Url[select].url}
+                  src={`${data && data.images[select]?.url}`}
                   alt=""
                   className="w-[80%]"
                 />
@@ -48,7 +49,7 @@ const ProductDetails = ({ data }) => {
                     } cursor-pointer`}
                   >
                     <img
-                      src={data?.image_Url[0].url}
+                      src={`${backend_url}${data.images && data.images[0]}`}
                       alt=""
                       className="h-[200px]"
                       onClick={() => setSelect(0)}
@@ -60,7 +61,7 @@ const ProductDetails = ({ data }) => {
                     } cursor-pointer`}
                   >
                     <img
-                      src={data?.image_Url[1].url}
+                      src={`${backend_url}${data.images && data.images[0]}`}
                       alt=""
                       className="h-[200px]"
                       onClick={() => setSelect(1)}
@@ -73,10 +74,10 @@ const ProductDetails = ({ data }) => {
                 <p>{data.description}</p>
                 <div className="flex pt-3">
                   <h4 className={`${styles.productDiscountPrice}}`}>
-                    BDT {data.discount_price}
+                    BDT {data.discountPrice}
                   </h4>
                   <h3 className={`${styles.price}`}>
-                    {data.price ? "BDT " + data.price : null}
+                    {data.originalPrice ? "BDT " + data.originalPrice : null}
                   </h3>
                 </div>
                 <div className="flex items-center mt-12 justify-between pr-3">
@@ -125,7 +126,7 @@ const ProductDetails = ({ data }) => {
                 </div>
                 <div className="flex items-center pt-8">
                   <img
-                    src={data.shop.shop_avatar.url}
+                    src={`${backend_url}${data?.shop?.avatar}`}
                     alt=""
                     className="w-[50px] h-[50px] rounded-full mr-2"
                   />
@@ -134,7 +135,7 @@ const ProductDetails = ({ data }) => {
                       {data.shop.name}
                     </h3>
                     <h5 className="pb-3 text-[15px]">
-                      ({data.shop.ratings}) Ratings
+                      (0/5) Ratings
                     </h5>
                   </div>
                   <div
