@@ -9,6 +9,7 @@ import styles from "../../styles/styles";
 import Loader from "../Layout/Loader";
 import { server } from "../../server";
 import { toast } from "react-toastify";
+import { set } from "mongoose";
 
 const AllCoupons = () => {
   const [open, setOpen] = useState(false);
@@ -41,9 +42,11 @@ const AllCoupons = () => {
 
   const handleDelete = async (id) => {
     axios.delete(`${server}/coupon/delete-coupon/${id}`,{withCredentials: true}).then((res) => {
-      toast.success("Coupon code deleted succesfully!")
+      toast.success("Coupon code deleted succesfully!",{autoClose: 2000});
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
     })
-    window.location.reload();
   };
 
   const handleSubmit = async (e) => {
@@ -63,9 +66,10 @@ const AllCoupons = () => {
         { withCredentials: true }
       )
       .then((res) => {
-       toast.success("Coupon code created successfully!");
+       toast.success("Coupon code created successfully!",{autoClose: 2000});
        setOpen(false);
-       window.location.reload();
+        setTimeout(() => {
+       window.location.reload();},2000);
       })
       .catch((error) => {
         toast.error(error.response.data.message);
