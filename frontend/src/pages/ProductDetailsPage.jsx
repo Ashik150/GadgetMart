@@ -13,16 +13,9 @@ const ProductDetailsPage = () => {
   console.log("Products are", products);
   const { id } = useParams();
   const [data, setData] = useState(null);
-  //const productName = name.replace(/-/g, " ").toLowerCase();
-  //console.log("Product Name is", productName);
 
   useEffect(() => {
     const data2 = products.find((i) => i._id === id);
-    // const x = products.find((i)=>{
-    //   console.log("Product id is", id);
-    //   console.log("Product2 id is", i._id);
-    //   return i._id === id;
-    // })
     setData(data2);
   }, [products, id]);
   return (
