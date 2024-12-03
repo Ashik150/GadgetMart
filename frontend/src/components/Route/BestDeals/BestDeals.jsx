@@ -8,7 +8,6 @@ import { getAllProducts } from "../../../redux/actions/product";
 const BestDeals = () => {
   const dispatch = useDispatch();
   const { allProducts} = useSelector((state) => state.products);
-  console.log("All Products are", allProducts);
   const [data, setData] = useState([]);
 
   useEffect(() => {
