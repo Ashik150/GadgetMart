@@ -6,18 +6,24 @@ import { useParams } from 'react-router-dom'
 import { productData } from '../static/data'
 import { useSelector } from 'react-redux'
 import SuggestedProduct from '../components/Products/SuggestedProduct'
+import { useDispatch } from 'react-redux'
+import { getAllProducts } from '../redux/actions/product'
 
 const ProductDetailsPage = () => {
-
-  const { products } = useSelector((state) => state.products);
-  console.log("Products are", products);
+  const dispatch = useDispatch();
+  const { allProducts } = useSelector((state) => state.products);
+  console.log("Products are", allProducts);
   const { id } = useParams();
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    const data2 = products.find((i) => i._id === id);
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const data2 =allProducts && allProducts.find((i) => i._id === id);
     setData(data2);
-  }, [products, id]);
+  }, [allProducts, id]);
   return (
     <div>
       <Header />
