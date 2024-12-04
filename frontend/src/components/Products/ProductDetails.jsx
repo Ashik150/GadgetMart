@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../../styles/styles";
 import {
@@ -10,13 +10,22 @@ import {
 import { Link } from "react-router-dom";
 import { backend_url } from "../../server";
 import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { getAllProductsShop } from "../../redux/actions/product";
 
 const ProductDetails = ({ data }) => {
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(1);
-  const {products} = useSelector((state) => state.products);
   const navigate = useNavigate();
+
+  const {products} = useSelector((state) => state.products);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllProductsShop(data && data?.shop._id));
+  }, [dispatch, data]);
+
 
   const decrementCount = () => {
     if (count > 1) {
