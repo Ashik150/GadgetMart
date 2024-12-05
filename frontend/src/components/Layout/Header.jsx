@@ -14,9 +14,10 @@ import Navbar from "./Navbar";
 import { CgProfile } from "react-icons/cg";
 import Cart from "../Cart/Cart";
 import WishList from "../WishList/WishList";
-// import { useSelector } from "react-import";
+import { useSelector } from "react-redux";
 const Header = ({ activeHeading }) => {
   // const { isAuthenticated, user } = useSelector((state) => state.user);
+  const {allProducts} = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [active, setActive] = useState(false);
@@ -24,13 +25,15 @@ const Header = ({ activeHeading }) => {
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
 
+  console.log("Header products are", allProducts);
+
 
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
 
     if (term) {
-      const filteredProducts = productData.filter((product) =>
+      const filteredProducts = allProducts &&  allProducts.filter((product) =>
         product.name.toLowerCase().includes(term.toLowerCase())
       );
       setSearchData(filteredProducts);
@@ -88,7 +91,7 @@ const Header = ({ activeHeading }) => {
                       <Link key={index} to={`/product_name/${product_name}`}>
                         <div className="w-full flex items-start py-3">
                           <img
-                            src={i.image_Url[0].url}
+                            src={`${i.images[0]?.url}`}
                             alt=""
                             className="w-[40px] h-[40px] mr-[10px]"
                           />
