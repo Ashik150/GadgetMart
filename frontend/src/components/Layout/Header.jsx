@@ -6,7 +6,7 @@ import {
   AiOutlineSearch,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
-import { categoriesData, productData } from "../../static/data";
+import { categoriesData } from "../../static/data";
 import { IoIosArrowDown, IoIosArrowForward } from "react-icons/io";
 import { BiMenuAltLeft } from "react-icons/bi";
 import DropDown from "./DropDown";
@@ -15,8 +15,9 @@ import { CgProfile } from "react-icons/cg";
 import Cart from "../Cart/Cart";
 import WishList from "../WishList/WishList";
 import { useSelector } from "react-redux";
+import { set } from "mongoose";
 const Header = ({ activeHeading }) => {
-  // const { isAuthenticated, user } = useSelector((state) => state.user);
+  //const { isAuthenticated, user } = useSelector((state) => state.user);
   const {allProducts} = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState([]);
@@ -85,7 +86,12 @@ const Header = ({ activeHeading }) => {
                 {searchData &&
                   searchData.map((i, index) => {
                     return (
-                      <Link to={`/product/${i._id}`}>
+                      <Link to={`/product/${i._id}`} key={index} 
+                      onClick={()=>{
+                        setSearchTerm("");
+                        setSearchData([]);
+                      }}
+                      >
                         <div className="w-full flex items-start py-3">
                           <img
                             src={`${i.images[0]?.url}`}
