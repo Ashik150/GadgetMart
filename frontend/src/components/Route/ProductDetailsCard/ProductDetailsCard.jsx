@@ -17,7 +17,7 @@ import {
 } from "../../../redux/actions/wishlist";
 
 const ProductDetailsCard = ({ setOpen, data }) => {
-  //const { cart } = useSelector((state) => state.cart);
+  const { cart } = useSelector((state) => state.cart);
   //const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
