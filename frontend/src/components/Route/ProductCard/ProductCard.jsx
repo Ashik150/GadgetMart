@@ -21,44 +21,44 @@ import { toast } from "react-toastify";
 import Ratings from "../../Products/Ratings";
 
 const ProductCard = ({ data,isEvent }) => {
-  //const { wishlist } = useSelector((state) => state.wishlist);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const [click, setClick] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
 
-  // useEffect(() => {
-  //   if (wishlist && wishlist.find((i) => i._id === data._id)) {
-  //     setClick(true);
-  //   } else {
-  //     setClick(false);
-  //   }
-  // }, [wishlist]);
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlist]);
 
-  // const removeFromWishlistHandler = (data) => {
-  //   setClick(!click);
-  //   dispatch(removeFromWishlist(data));
-  // };
+  const removeFromWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(removeFromWishlist(data));
+  };
 
-  // const addToWishlistHandler = (data) => {
-  //   setClick(!click);
-  //   dispatch(addToWishlist(data));
-  // };
+  const addToWishlistHandler = (data) => {
+    setClick(!click);
+    dispatch(addToWishlist(data));
+  };
 
-  // const addToCartHandler = (id) => {
-  //   const isItemExists = cart && cart.find((i) => i._id === id);
-  //   if (isItemExists) {
-  //     toast.error("Item already in cart!");
-  //   } else {
-  //     if (data.stock < 1) {
-  //       toast.error("Product stock limited!");
-  //     } else {
-  //       const cartData = { ...data, qty: 1 };
-  //       dispatch(addTocart(cartData));
-  //       toast.success("Item added to cart successfully!");
-  //     }
-  //   }
-  // };
+  const addToCartHandler = (id) => {
+    const isItemExists = cart && cart.find((i) => i._id === id);
+    if (isItemExists) {
+      toast.error("Item already in cart!");
+    } else {
+      if (data.stock < 1) {
+        toast.error("Product stock limited!");
+      } else {
+        const cartData = { ...data, qty: 1 };
+        dispatch(addTocart(cartData));
+        toast.success("Item added to cart successfully!");
+      }
+    }
+  };
 
   const productName = data?.name.replace(/\s+/g, '-').toLowerCase();
   return (

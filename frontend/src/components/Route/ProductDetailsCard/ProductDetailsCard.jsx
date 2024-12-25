@@ -18,7 +18,7 @@ import {
 
 const ProductDetailsCard = ({ setOpen, data }) => {
   const { cart } = useSelector((state) => state.cart);
-  //const { wishlist } = useSelector((state) => state.wishlist);
+  const { wishlist } = useSelector((state) => state.wishlist);
   const dispatch = useDispatch();
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
@@ -51,13 +51,13 @@ const ProductDetailsCard = ({ setOpen, data }) => {
     }
   };
 
-  // useEffect(() => {
-  //   if (wishlist && wishlist.find((i) => i._id === data._id)) {
-  //     setClick(true);
-  //   } else {
-  //     setClick(false);
-  //   }
-  // }, [wishlist]);
+  useEffect(() => {
+    if (wishlist && wishlist.find((i) => i._id === data._id)) {
+      setClick(true);
+    } else {
+      setClick(false);
+    }
+  }, [wishlist]);
 
   const removeFromWishlistHandler = (data) => {
     setClick(!click);

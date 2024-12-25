@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { set } from "mongoose";
 const Header = ({ activeHeading }) => {
   //const { isAuthenticated, user } = useSelector((state) => state.user);
+  const {wishlist} = useSelector((state) => state.wishlist);
   const {cart} = useSelector((state) => state.cart);
   const {allProducts} = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
@@ -154,7 +155,7 @@ const Header = ({ activeHeading }) => {
               onClick={()=>setOpenWishlist(true)}>
                 <AiOutlineHeart size={30} color="rgb(255 255 255/83%)" />
                 <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
-                  3
+                  {wishlist && wishlist.length}
                 </span>
               </div>
               <div
