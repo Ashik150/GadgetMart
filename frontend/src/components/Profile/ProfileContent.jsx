@@ -6,7 +6,7 @@ import {
 } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { useState, useEffect } from "react";
-import { backend_url } from "../../server";
+import { server } from "../../server";
 import { User } from "../../../../backend/models/user.model";
 import { RxPerson } from "react-icons/rx";
 import { useAuthStore } from "../../store/authStore";
@@ -14,17 +14,55 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { MdOutlineTrackChanges } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { updateUserInformation } from "../../redux/actions/user";
+import { toast } from "react-toastify";
+import { loadUser } from "../../redux/actions/user";
+import axios from "axios";
+
 
 const ProfileContent = ({ active }) => {
-  const { user } = useAuthStore();
+  const { user} = useAuthStore();
   const [name, setName] = useState(user && user.name);
   const [email, setEmail] = useState(user && user.email);
-  const [phoneNumber, setPhoneNumber] = useState();
+  const [phoneNumber, setPhoneNumber] = useState(user && user.phoneNumber);
   const [password,setPassword] = useState();
+  const [avatar, setAvatar] = useState(null); 
+  const dispatch = useDispatch();
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    dispatch(updateUserInformation(name,email,phoneNumber,password));
   };
+
+  const handleImage = async (e) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (reader.readyState === 2) {
+        setAvatar(reader.result);
+        axios
+          .put(
+            `${server}/user/update-avatar`,
+            { avatar: reader.result },
+            {
+              withCredentials: true,
+            }
+          )
+          .then((response) => {
+            dispatch(loadUser());
+            toast.success("avatar updated successfully!");
+          })
+          .catch((error) => {
+            toast.error(error);
+          });
+      }
+    };
+
+    reader.readAsDataURL(e.target.files[0]);
+  };
+
   return (
     <div className="w-full">
       {/* profile page */}
@@ -32,14 +70,21 @@ const ProfileContent = ({ active }) => {
         <>
           <div className="flex justify-center w-full">
             <div className="relative">
-              {/* <img
-                    src="https://i.ibb.co.com/gRfks0f/ayon.jpg"
-                    className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
-                    alt=""
-                /> */}
-              <RxPerson className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#006400]" />
+              <img
+                src={`${user?.avatar?.url}`}
+                className="w-[150px] h-[150px] rounded-full object-cover border-[3px] border-[#3ad132]"
+                alt=""
+              />
               <div className="w-[30px] h-[30px] bg-[#E3E9EE] rounded-full flex items-center justify-center cursor-pointer absolute bottom-[5px] right-[5px]">
-                <AiOutlineCamera />
+                <input
+                  type="file"
+                  id="image"
+                  className="hidden"
+                  onChange={handleImage}
+                />
+                <label htmlFor="image">
+                  <AiOutlineCamera />
+                </label>
               </div>
             </div>
           </div>

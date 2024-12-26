@@ -16,11 +16,15 @@ import Cart from "../Cart/Cart";
 import WishList from "../WishList/WishList";
 import { useSelector } from "react-redux";
 import { set } from "mongoose";
+import { useAuthStore } from "../../store/authStore";
+
+
+
 const Header = ({ activeHeading }) => {
-  //const { isAuthenticated, user } = useSelector((state) => state.user);
-  const {wishlist} = useSelector((state) => state.wishlist);
-  const {cart} = useSelector((state) => state.cart);
-  const {allProducts} = useSelector((state) => state.products);
+  const {user} = useAuthStore();
+  const { wishlist } = useSelector((state) => state.wishlist);
+  const { cart } = useSelector((state) => state.cart);
+  const { allProducts } = useSelector((state) => state.products);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchData, setSearchData] = useState([]);
   const [active, setActive] = useState(false);
@@ -36,7 +40,7 @@ const Header = ({ activeHeading }) => {
     setSearchTerm(term);
 
     if (term) {
-      const filteredProducts = allProducts &&  allProducts.filter((product) =>
+      const filteredProducts = allProducts && allProducts.filter((product) =>
         product.name.toLowerCase().includes(term.toLowerCase())
       );
       setSearchData(filteredProducts);
@@ -88,11 +92,11 @@ const Header = ({ activeHeading }) => {
                 {searchData &&
                   searchData.map((i, index) => {
                     return (
-                      <Link to={`/product/${i._id}`} key={index} 
-                      onClick={()=>{
-                        setSearchTerm("");
-                        setSearchData([]);
-                      }}
+                      <Link to={`/product/${i._id}`} key={index}
+                        onClick={() => {
+                          setSearchTerm("");
+                          setSearchData([]);
+                        }}
                       >
                         <div className="w-full flex items-start py-3">
                           <img
@@ -118,9 +122,8 @@ const Header = ({ activeHeading }) => {
         </div>
       </div>
       <div
-        className={`${
-          active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
-        } transition hidden 800px:flex items-center justify-between w-full bg-[#006A4E] h-[70px]`}
+        className={`${active === true ? "shadow-sm fixed top-0 left-0 z-10" : null
+          } transition hidden 800px:flex items-center justify-between w-full bg-[#006A4E] h-[70px]`}
       >
         <div
           className={`${styles.section} relative ${styles.noramlFlex} justify-between`}
@@ -152,7 +155,7 @@ const Header = ({ activeHeading }) => {
           <div className="flex">
             <div className={styles.noramlFlex}>
               <div className="relative cursor-pointer mr-[15px]"
-              onClick={()=>setOpenWishlist(true)}>
+                onClick={() => setOpenWishlist(true)}>
                 <AiOutlineHeart size={30} color="rgb(255 255 255/83%)" />
                 <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
                   {wishlist && wishlist.length}
@@ -167,14 +170,27 @@ const Header = ({ activeHeading }) => {
                   {cart && cart.length}
                 </span>
               </div>
+
               <div className="relative cursor-pointer mr-[15px]">
-                <Link to="/profilepage">
-                  <CgProfile size={30} color="rgb(255 255 255/83%)" />
-                </Link>
+                {user===null ? (
+                  <Link to="/login">
+                    <CgProfile size={30} color="rgb(255 255 255/83%)" />
+                  </Link>
+                ) : (
+                  <Link to="/profilepage">
+                    <img
+                      src={`${user?.avatar?.url}`}
+                      className="w-[35px] h-[35px] rounded-full"
+                      alt=""
+                    />
+                  </Link>
+                )}
               </div>
             </div>
+
             {/* Cart popup */}
             {openCart ? <Cart setOpenCart={setOpenCart} /> : null}
+
             {/* wishlist popup */}
             {openWishlist ? <WishList setOpenWishlist={setOpenWishlist} /> : null}
           </div>

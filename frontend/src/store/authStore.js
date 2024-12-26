@@ -95,4 +95,22 @@ export const useAuthStore = create((set) => ({
 			throw error;
 		}
 	},
+	updateUserInfo: async (name, email, phoneNumber, password) => {
+		set({ isLoading: true, error: null });
+		try {
+			const response = await axios.put(`${API_URL}/update-user-info`, {
+				name,
+				email,
+				phoneNumber,
+				password,
+			});
+			set({ user: response.data.user, isLoading: false });
+		} catch (error) {
+			set({
+				isLoading: false,
+				error: error.response.data.message || "Error updating user information",
+			});
+			throw error;
+		}
+	},
 }));
