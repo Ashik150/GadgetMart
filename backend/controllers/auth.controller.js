@@ -301,3 +301,30 @@ export const deleteUserAddress = async (req, res, next) => {
         return next(new ErrorHandler(error.message, 500));
     }
 }
+
+export const updatePassword = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.userId).select("+password");
+        const isPasswordMatched =  await bcryptjs.compare(req.body.oldPassword, user.password);
+
+        if (!isPasswordMatched) {
+            return next(new ErrorHandler("Old password is incorrect!", 400));
+        }
+
+        if (req.body.newPassword !== req.body.confirmPassword) {
+            return next(
+                new ErrorHandler("Password doesn't matched with each other!", 400)
+            );
+        }
+        user.password = await bcryptjs.hash(req.body.newPassword, 10);
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password updated successfully!",
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+};

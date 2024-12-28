@@ -11,6 +11,7 @@ import { MdOutlineTrackChanges } from "react-icons/md";
 import { TbAddressBook } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore";
+import { RiLockPasswordLine } from "react-icons/ri";
 
 const ProfileSidebar = ({ setActive, active }) => {
   const navigate = useNavigate();
@@ -86,13 +87,13 @@ const ProfileSidebar = ({ setActive, active }) => {
         className="flex items-center cursor pointer w-full mb-8"
         onClick={() => setActive(6)}
       >
-        <AiOutlineCreditCard size={20} color={active === 6 ? "green" : ""} />
+        <RiLockPasswordLine size={20} color={active === 6 ? "green" : ""} />
         <span
           className={`pl-3 ${
             active === 6 ? "text-[green]" : ""
           } 800px:block hidden`}
         >
-          Payment Methods
+          Change Password
         </span>
       </div>
       <div
