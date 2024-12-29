@@ -43,6 +43,7 @@ import { server } from "./server";
 import { loadSeller, loadUser } from "./redux/actions/user";
 import Store from "./redux/store";
 import { useSelector } from "react-redux";
+import CheckoutPage from "./pages/CheckoutPage.jsx";
 
 
 
@@ -165,6 +166,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
               </ProtectedRoute>
             }
           />
