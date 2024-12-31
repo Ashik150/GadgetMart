@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import FloatingShape from "./components/floatingShape";
 import React, { useState } from "react";
 import axios from "axios";
@@ -27,6 +27,7 @@ import ShopCreateEvents from "./pages/Shop/ShopCreateEvents";
 import ShopAllEvents from "./pages/Shop/ShopAllEvents";
 import ShopAllCoupons from "./pages/Shop/ShopAllCoupons";
 import ShopPreviewPage from "./pages/Shop/ShopPreviewPage.jsx";
+import PaymentPage from "./pages/PaymentPage.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -44,6 +45,9 @@ import { loadSeller, loadUser } from "./redux/actions/user";
 import Store from "./redux/store";
 import { useSelector } from "react-redux";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { get } from "mongoose";
 
 
 
@@ -84,12 +88,23 @@ const RedirectAuthenticatedUser = ({ children }) => {
 function App() {
   const { isCheckingAuth, checkAuth } = useAuthStore();
   const { isSeller } = useSelector((state) => state.seller);
+  //const [stripeApiKey, setStripeApiKey] = useState("");
 
+  async function getStripeApiKey() {
+    //const { data } = await axios.get(`${server}/api/payment/stripeapikey`);
+    const {data} = "pk_test_51QbznEGWFtnm4a58mz7ymVUi0qubUuhpNDJydjsPMcGVVHTY0ydJkS2RR6dRzBoU04WI78ocCIKIgum85zzcAGxs00LhW2Z51m";
+    //console.log("Stripe API Key: ", data.stripeApikey);
+    setStripeApiKey(data.stripeApikey);
+  }
+  const stripeApiKey = "pk_test_51QbznEGWFtnm4a58mz7ymVUi0qubUuhpNDJydjsPMcGVVHTY0ydJkS2RR6dRzBoU04WI78ocCIKIgum85zzcAGxs00LhW2Z51m";
   useEffect(() => {
     checkAuth();
     //Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
+    //Store.dispatch(loadUser());
+    getStripeApiKey();
   }, [checkAuth]);
+  console.log("Stripe: ", stripeApiKey);
 
   if (isCheckingAuth) return <LoadingSpinner />;
 
@@ -100,6 +115,22 @@ function App() {
 			<FloatingShape color='bg-emerald-500' size='w-48 h-48' top='70%' left='80%' delay={5} />
 			<FloatingShape color='bg-lime-500' size='w-32 h-32' top='40%' left='-10%' delay={2} /> */}
 
+        {/* <BrowserRouter>
+            {stripeApiKey && (
+              <Elements stripe={loadStripe(stripeApiKey)}>
+                <Routes>
+                  <Route
+                    path="/payment"
+                    element={
+                      <ProtectedRoute>
+                        <PaymentPage />
+                      </ProtectedRoute>
+                    }
+                  />
+                </Routes>
+              </Elements>
+            )}
+          </BrowserRouter> */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/products" element={<ProductsPage />} />
@@ -170,6 +201,21 @@ function App() {
             }
           />
           <Route
+            path="/payment"
+            element={
+              <ProtectedRoute>
+                {stripeApiKey ? (
+                  <Elements stripe={loadStripe(stripeApiKey)}>
+                    <PaymentPage />
+                  </Elements>
+                ) : (
+                  <Loader /> // or any loading component you have
+                )}
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
             path="/checkout"
             element={
               <ProtectedRoute>
@@ -190,7 +236,7 @@ function App() {
             element={
               <RedirectAuthenticatedUser>
                 <LoginPage />
-              </RedirectAuthenticatedUser> 
+              </RedirectAuthenticatedUser>
             }
           />
           <Route path="/verify-email" element={<EmailVerificationPage />} />

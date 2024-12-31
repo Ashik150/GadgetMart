@@ -204,6 +204,7 @@ export const updateUserInfo = async (req, res, next) => {
 
         user.name = name;
         user.phoneNumber = phoneNumber;
+        //console.log(process.env.STRIPE_API_KEY);
 
         await user.save();
 
