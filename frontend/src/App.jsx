@@ -28,6 +28,7 @@ import ShopAllEvents from "./pages/Shop/ShopAllEvents";
 import ShopAllCoupons from "./pages/Shop/ShopAllCoupons";
 import ShopPreviewPage from "./pages/Shop/ShopPreviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
+import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -99,9 +100,7 @@ function App() {
   const stripeApiKey = "pk_test_51QbznEGWFtnm4a58mz7ymVUi0qubUuhpNDJydjsPMcGVVHTY0ydJkS2RR6dRzBoU04WI78ocCIKIgum85zzcAGxs00LhW2Z51m";
   useEffect(() => {
     checkAuth();
-    //Store.dispatch(loadUser());
     Store.dispatch(loadSeller());
-    //Store.dispatch(loadUser());
     getStripeApiKey();
   }, [checkAuth]);
   console.log("Stripe: ", stripeApiKey);
@@ -192,6 +191,7 @@ function App() {
             path="/seller/activation/:activation_token"
             element={<SellerActivationPage />}
           />
+            <Route path="/order/success" element={<OrderSuccessPage />} />
           <Route
             path="/dashboard"
             element={
