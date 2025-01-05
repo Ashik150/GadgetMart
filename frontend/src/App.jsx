@@ -29,6 +29,7 @@ import ShopAllCoupons from "./pages/Shop/ShopAllCoupons";
 import ShopPreviewPage from "./pages/Shop/ShopPreviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
+import ShopAllOrders from "./pages/Shop/ShopAllOrders";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -162,6 +163,11 @@ function App() {
           <Route path="/shopdashboard-create-event" element={
             <SellerProtectedRoute isSeller={isSeller}>
               <ShopCreateEvents />
+            </SellerProtectedRoute>
+          } />
+          <Route path="/shopdashboard-orders" element={
+            <SellerProtectedRoute isSeller={isSeller}>
+              <ShopAllOrders />
             </SellerProtectedRoute>
           } />
           <Route path="/shopdashboard-products" element={
