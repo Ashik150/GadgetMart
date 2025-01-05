@@ -21,6 +21,7 @@ import { loadUser } from "../../redux/actions/user";
 import axios from "axios";
 import { Country, State } from 'country-state-city';
 import { set } from "mongoose";
+import { getAllOrdersOfUser } from "../../redux/actions/order";
 
 
 const ProfileContent = ({ active }) => {
@@ -198,28 +199,14 @@ const ProfileContent = ({ active }) => {
 };
 
 const AllOrders = () => {
-  const orders = [
-    {
-      _id: "746bkxckjvbsv20221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "processing",
-    },
-    {
-      _id: "749bkxdbdbjvbsv20222",
-      orderItems: [
-        {
-          name: "MacBook pro M2 chipset 256gb ssd 8gb",
-        },
-      ],
-      totalPrice: 200,
-      orderStatus: "processing",
-    },
-  ];
+  const { orders } = useSelector((state) => state.order);
+  const { user } = useAuthStore();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, []);
+  console.log(orders);
+
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
@@ -258,7 +245,7 @@ const AllOrders = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/order/${params.id}`}>
+            <Link to={`/user/order/${params.id}`}>
               <Button>
                 <AiOutlineArrowRight size={20} />
               </Button>
@@ -273,9 +260,9 @@ const AllOrders = () => {
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
-        total: `US$ ${item.totalPrice}`,
-        status: item.orderStatus,
+        itemsQty: item.cart.length,
+        total: `${item.totalPrice} BDT`,
+        status: item.status,
       });
     });
 
