@@ -31,6 +31,7 @@ import PaymentPage from "./pages/PaymentPage.jsx";
 import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 import ShopAllOrders from "./pages/Shop/ShopAllOrders";
 import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
+import OrderDetailsPage from "./pages/OrderDetailsPage";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -212,6 +213,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user/order/:id"
+            element={
+              <ProtectedRoute>
+                <OrderDetailsPage />
               </ProtectedRoute>
             }
           />
