@@ -30,6 +30,7 @@ import ShopPreviewPage from "./pages/Shop/ShopPreviewPage.jsx";
 import PaymentPage from "./pages/PaymentPage.jsx";
 import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 import ShopAllOrders from "./pages/Shop/ShopAllOrders";
+import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -190,6 +191,14 @@ function App() {
             element={
               <SellerProtectedRoute isSeller={isSeller}>
                 <ShopHomePage />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/order/:id"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopOrderDetails />
               </SellerProtectedRoute>
             }
           />
