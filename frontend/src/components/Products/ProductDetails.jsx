@@ -18,6 +18,8 @@ import {
 } from "../../redux/actions/wishlist";
 import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
+import { useAuthStore } from "../../store/authStore";
+import Ratings from "./Ratings";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -26,8 +28,8 @@ const ProductDetails = ({ data }) => {
   const [click, setClick] = useState(false);
   const [select, setSelect] = useState(1);
   const navigate = useNavigate();
-
   const { products } = useSelector((state) => state.products);
+  const { user } = useAuthStore();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,6 +80,24 @@ const ProductDetails = ({ data }) => {
       }
     }
   };
+
+
+  const totalReviewsLength =
+    products &&
+    products.reduce((acc, product) => acc + product.reviews.length, 0);
+
+  const totalRatings =
+    products &&
+    products.reduce(
+      (acc, product) =>
+        acc + product.reviews.reduce((sum, review) => sum + review.rating, 0),
+      0
+    );
+
+  const avg = totalRatings / totalReviewsLength || 0;
+
+  const averageRating = avg.toFixed(2);
+  console.log(averageRating);
 
   return (
     <div className="bg-white">
@@ -183,7 +203,7 @@ const ProductDetails = ({ data }) => {
                       </h3>
                     </Link>
                     <h5 className="pb-3 text-[15px]">
-                      (0/5) Ratings
+                      ({averageRating}/5) Ratings
                     </h5>
                   </div>
                   <div
@@ -198,13 +218,13 @@ const ProductDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} products={products} />
+          <ProductDetailsInfo data={data} products={products} totalReviewsLength={totalReviewsLength} averageRating={averageRating} />
         </div>
       ) : null}
     </div>
   );
 };
-const ProductDetailsInfo = ({ data, products }) => {
+const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating }) => {
   const [active, setActive] = useState(1);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded  ">
@@ -257,8 +277,34 @@ const ProductDetailsInfo = ({ data, products }) => {
         </>
       ) : null}
       {active === 2 ? (
-        <div className="w-full justify-center min-h-[40vh] flex items-center">
-          <p>No Reviews yet!</p>
+        <div className="w-full justify-center min-h-[40vh] flex flex-col items-center">
+          {
+            data && data.reviews.map((item, index) => (
+              <div className="w-full flex my-2">
+                <img
+                  src={`${item.user.avatar?.url}`}
+                  alt=""
+                  className="w-[50px] h-[50px] rounded-full"
+                />
+                <div className="pl-2 ">
+                  <div className="w-full flex items-center">
+                    <h1 className="font-[500] mr-3">{item.user.name}</h1>
+                    <Ratings rating={data?.ratings} />
+                  </div>
+                  <p>{item.comment}</p>
+                </div>
+              </div>
+            ))
+          }
+
+
+          <div className="w-full flex justify-center">
+            {
+              data && data.reviews.length === 0 && (
+                <h5>No Review Yet!</h5>
+              )
+            }
+          </div>
         </div>
       ) : null}
       {active === 3 && (
@@ -276,7 +322,7 @@ const ProductDetailsInfo = ({ data, products }) => {
                     {data.shop.name}
                   </h3>
                   <h5 className="pb-2 text-[15px]">
-                    (0/5) Ratings
+                    ({averageRating}/5) Ratings
                   </h5>
                 </div>
               </div>
@@ -294,7 +340,7 @@ const ProductDetailsInfo = ({ data, products }) => {
                 Total Products:{" "} <span className="font-[500]"> {products && products.length}</span>
               </h5>
               <h5 className="font-[600] pt-3">
-                Total Reviews:{" "} <span className="font-[500]">324</span>
+                Total Reviews:{" "} <span className="font-[500]">{totalReviewsLength}</span>
               </h5>
               <Link to="/">
                 <div className={`${styles.button} rounded-[4px] h-[39.5px] mt-3`}>
