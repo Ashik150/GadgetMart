@@ -1,6 +1,7 @@
 import cloudinary from 'cloudinary';
 import { Product } from '../models/product.model.js';
 import { Shop } from '../models/shop.model.js';
+import { Order } from '../models/order.model.js';
 import ErrorHandler from '../Utils/ErrorHandler.js';
 
 export const createProduct = async (req, res, next) => {
@@ -99,6 +100,58 @@ export const getAllProduct = async (req, res, next) => {
         });
     } catch (error) {
         return next(new ErrorHandler(error.message, 400));
+    }
+};
+
+export const createNewReview = async (req, res, next) => {
+    try {
+        const { user, rating, comment, productId, orderId } = req.body;
+
+        const product = await Product.findById(productId);
+
+        const review = {
+            user,
+            rating,
+            comment,
+            productId,
+        };
+
+        const isReviewed = product.reviews.find(
+            (rev) => rev.user._id === req.userId
+        );
+
+        if (isReviewed) {
+            product.reviews.forEach((rev) => {
+                if (rev.user._id === req.userId) {
+                    (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+                }
+            });
+        } else {
+            product.reviews.push(review);
+        }
+
+        let avg = 0;
+
+        product.reviews.forEach((rev) => {
+            avg += rev.rating;
+        });
+
+        product.ratings = avg / product.reviews.length;
+
+        await product.save({ validateBeforeSave: false });
+
+        await Order.findByIdAndUpdate(
+            orderId,
+            { $set: { "cart.$[elem].isReviewed": true } },
+            { arrayFilters: [{ "elem._id": productId }], new: true }
+        );
+
+        res.status(200).json({
+            success: true,
+            message: "Reviwed succesfully!",
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error, 400));
     }
 };
 
