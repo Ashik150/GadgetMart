@@ -277,7 +277,7 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating 
         </>
       ) : null}
       {active === 2 ? (
-        <div className="w-full justify-center min-h-[40vh] flex flex-col items-center py=3 overflow-y-scroll">
+        <div className="w-full min-h-[40vh] flex flex-col items-center py-3 overflow-y-scroll">
           {
             data && data.reviews.map((item, index) => (
               <div className="w-full flex my-2">
