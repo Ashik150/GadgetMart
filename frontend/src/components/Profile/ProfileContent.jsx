@@ -8,6 +8,7 @@ import styles from "../../styles/styles";
 import { useState, useEffect } from "react";
 import { server } from "../../server";
 import { User } from "../../../../backend/models/user.model";
+import { MdTrackChanges } from "react-icons/md";
 import { RxCross1 } from "react-icons/rx";
 import { useAuthStore } from "../../store/authStore";
 import { DataGrid } from "@mui/x-data-grid";
@@ -208,12 +209,12 @@ const AllOrders = () => {
   console.log(orders);
 
   const columns = [
-    { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
+    { field: "id", headerName: "Order ID", minWidth: 200, flex: 0.7 },
 
     {
       field: "status",
       headerName: "Status",
-      minWidth: 130,
+      minWidth: 150,
       flex: 0.7,
       cellClassName: (params) => {
         return params.row.status === "delivered" ? "greenColor" : "redColor";
@@ -223,7 +224,7 @@ const AllOrders = () => {
       field: "itemsQty",
       headerName: "Items Qty",
       type: "number",
-      minWidth: 130,
+      minWidth: 100,
       flex: 0.7,
     },
 
@@ -364,18 +365,14 @@ const AllRefundOrders = () => {
 };
 
 const TrackOrder = () => {
-  const orders = [
-    {
-      _id: "746bkxckjvbsv20221",
-      orderItems: [
-        {
-          name: "Iphone 14 pro max",
-        },
-      ],
-      totalPrice: 120,
-      orderStatus: "processing",
-    },
-  ];
+  const { user } = useAuthStore();
+  const { orders } = useSelector((state) => state.order);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllOrdersOfUser(user._id));
+  }, []);
+
   const columns = [
     { field: "id", headerName: "Order ID", minWidth: 150, flex: 0.7 },
 
@@ -414,9 +411,9 @@ const TrackOrder = () => {
       renderCell: (params) => {
         return (
           <>
-            <Link to={`/order/${params.id}`}>
+            <Link to={`/user/track/order/${params.id}`}>
               <Button>
-                <MdOutlineTrackChanges size={20} />
+                <MdTrackChanges size={20} />
               </Button>
             </Link>
           </>
@@ -424,16 +421,19 @@ const TrackOrder = () => {
       },
     },
   ];
+
   const row = [];
+
   orders &&
     orders.forEach((item) => {
       row.push({
         id: item._id,
-        itemsQty: item.orderItems.length,
-        total: `US$ ${item.totalPrice}`,
-        status: item.orderStatus,
+        itemsQty: item.cart.length,
+        total: "US$ " + item.totalPrice,
+        status: item.status,
       });
     });
+
   return (
     <div className="pl-8 pt-1">
       <DataGrid

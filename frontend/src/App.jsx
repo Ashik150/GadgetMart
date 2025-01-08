@@ -32,6 +32,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage.jsx";
 import ShopAllOrders from "./pages/Shop/ShopAllOrders";
 import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
+import TrackOrderPage from "./pages/TrackOrderPage.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -221,6 +222,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <OrderDetailsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user/track/order/:id"
+            element={
+              <ProtectedRoute>
+                <TrackOrderPage />
               </ProtectedRoute>
             }
           />
