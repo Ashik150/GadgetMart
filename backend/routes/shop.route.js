@@ -1,5 +1,5 @@
 import express from 'express';
-import {createShop,activateShop,loginShop,getSeller,logoutShop ,getShopInfo} from '../controllers/shop.controller.js';
+import {createShop,activateShop,loginShop,getSeller,logoutShop ,getShopInfo,updateSeller} from '../controllers/shop.controller.js';
 import { isSeller } from '../middleware/auth.middleware.js';
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.post('/login-shop',loginShop);
 router.get('/getSeller',isSeller,getSeller);
 router.get('/logout',isSeller,logoutShop);
 router.get('/get-shop-info/:id',getShopInfo);
+router.put('/update-seller-info',isSeller,updateSeller);
 
 
 export default router;
