@@ -33,6 +33,7 @@ import ShopAllOrders from "./pages/Shop/ShopAllOrders";
 import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
 import TrackOrderPage from "./pages/TrackOrderPage.jsx";
+import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -201,6 +202,14 @@ function App() {
             element={
               <SellerProtectedRoute isSeller={isSeller}>
                 <ShopOrderDetails />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-refunds"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopAllRefunds />
               </SellerProtectedRoute>
             }
           />
