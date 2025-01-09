@@ -34,6 +34,7 @@ import ShopOrderDetails from "./pages/Shop/ShopOrderDetails.jsx";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
 import TrackOrderPage from "./pages/TrackOrderPage.jsx";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
+import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -54,6 +55,7 @@ import CheckoutPage from "./pages/CheckoutPage.jsx";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { get } from "mongoose";
+import ShopSettings from "./components/Shop/ShopSettings.jsx";
 
 
 
@@ -210,6 +212,14 @@ function App() {
             element={
               <SellerProtectedRoute isSeller={isSeller}>
                 <ShopAllRefunds />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopSettingsPage />
               </SellerProtectedRoute>
             }
           />
