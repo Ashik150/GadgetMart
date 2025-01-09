@@ -3,6 +3,7 @@ import { sendMail } from '../Utils/sendMail.js';
 import { sendShopToken } from '../Utils/shopToken.js';
 import jwt from 'jsonwebtoken';
 import { ErrorHandler } from '../Utils/ErrorHandler.js';
+import cloudinary from 'cloudinary';
 
 
 export const createShop = async (req, res, next) => {
@@ -186,6 +187,37 @@ export const updateSeller = async (req, res, next) => {
         res.status(201).json({
             success: true,
             shop,
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+}
+
+export const updateShopAvatar = async (req, res, next) => {
+    try {
+        let existsSeller = await Shop.findById(req.seller._id);
+
+        if(existsSeller.avatar.public_id){
+            const imageId = existsSeller.avatar.public_id;
+            await cloudinary.uploader.destroy(imageId);
+        }
+
+        const myCloud = await cloudinary.uploader.upload(req.body.avatar, {
+            folder: "avatars",
+            width: 150,
+        });
+
+        existsSeller.avatar = {
+            public_id: myCloud.public_id,
+            url: myCloud.secure_url,
+        };
+
+
+        await existsSeller.save();
+
+        res.status(200).json({
+            success: true,
+            seller: existsSeller,
         });
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
