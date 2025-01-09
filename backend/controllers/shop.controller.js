@@ -17,10 +17,10 @@ export const createShop = async (req, res, next) => {
             name: req.body.name,
             email: email,
             password: req.body.password,
-            // avatar: {
-            //   public_id: myCloud.public_id,
-            //   url: myCloud.secure_url,
-            // },
+            avatar: {
+              public_id: myCloud.public_id,
+              url: myCloud.secure_url,
+            },
             address: req.body.address,
             phoneNumber: req.body.phoneNumber,
             zipCode: req.body.zipCode,
