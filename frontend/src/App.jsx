@@ -35,6 +35,7 @@ import OrderDetailsPage from "./pages/OrderDetailsPage";
 import TrackOrderPage from "./pages/TrackOrderPage.jsx";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
+//import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -56,6 +57,7 @@ import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import { get } from "mongoose";
 import ShopSettings from "./components/Shop/ShopSettings.jsx";
+import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
 
 
 
@@ -220,6 +222,14 @@ function App() {
             element={
               <SellerProtectedRoute isSeller={isSeller}>
                 <ShopSettingsPage />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-withdraw-money"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopWithDrawMoneyPage />
               </SellerProtectedRoute>
             }
           />
