@@ -11,6 +11,7 @@ import eventRoutes from './routes/event.route.js';
 import couponRoutes from './routes/couponCode.route.js';
 import paymentRoutes from './routes/payment.route.js';
 import orderRoutes from './routes/order.route.js';
+import conversationRoutes from './routes/conversation.route.js';
 import cloudinary from 'cloudinary';
 
 dotenv.config();
@@ -41,6 +42,7 @@ app.use("/api/event",eventRoutes);
 app.use("/api/coupon",couponRoutes);
 app.use("/api/payment",paymentRoutes);
 app.use("/api/order",orderRoutes);
+app.use("/api/conversation",conversationRoutes);
 
 app.listen(PORT, () => {
     connection();
