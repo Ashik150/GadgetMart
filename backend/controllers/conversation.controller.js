@@ -1,4 +1,4 @@
-import {Conversation} from "../models/conversation.model.js";
+import { Conversation } from "../models/conversation.model.js";
 import ErrorHandler from '../Utils/ErrorHandler.js';
 
 
@@ -59,6 +59,24 @@ export const getConversationUser = async (req, res, next) => {
         res.status(201).json({
             success: true,
             conversations,
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error), 500);
+    }
+};
+
+export const updateLastMessage = async (req, res, next) => {
+    try {
+        const { lastMessage, lastMessageId } = req.body;
+
+        const conversation = await Conversation.findByIdAndUpdate(req.params.id, {
+            lastMessage,
+            lastMessageId,
+        });
+
+        res.status(201).json({
+            success: true,
+            conversation,
         });
     } catch (error) {
         return next(new ErrorHandler(error), 500);
