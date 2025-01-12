@@ -1,5 +1,5 @@
 import express from 'express';
-import { signup, login, logout, verifyEmail, forgotPassword, resetPassword, checkAuth,updateUserInfo,updateAvatar,updateUserAddress,deleteUserAddress,updatePassword} from '../controllers/auth.controller.js';
+import {userinfo, signup, login, logout, verifyEmail, forgotPassword, resetPassword, checkAuth,updateUserInfo,updateAvatar,updateUserAddress,deleteUserAddress,updatePassword} from '../controllers/auth.controller.js';
 import { verifyToken } from '../middleware/verifyToken.js';
 import { isAuthenticated } from '../middleware/auth.middleware.js';
 const router = express.Router();
@@ -17,5 +17,6 @@ router.put('/update-avatar', updateAvatar);
 router.put('/update-user-addresses',verifyToken,updateUserAddress);
 router.delete('/delete-user-address/:id',verifyToken, deleteUserAddress);
 router.put('/update-user-password',verifyToken,updatePassword);
+router.get('/user-info/:id',userinfo);
 
 export default router;

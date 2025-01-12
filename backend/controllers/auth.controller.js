@@ -306,7 +306,7 @@ export const deleteUserAddress = async (req, res, next) => {
 export const updatePassword = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId).select("+password");
-        const isPasswordMatched =  await bcryptjs.compare(req.body.oldPassword, user.password);
+        const isPasswordMatched = await bcryptjs.compare(req.body.oldPassword, user.password);
 
         if (!isPasswordMatched) {
             return next(new ErrorHandler("Old password is incorrect!", 400));
@@ -324,6 +324,19 @@ export const updatePassword = async (req, res, next) => {
         res.status(200).json({
             success: true,
             message: "Password updated successfully!",
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500));
+    }
+};
+
+export const userinfo = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        res.status(201).json({
+            success: true,
+            user,
         });
     } catch (error) {
         return next(new ErrorHandler(error.message, 500));
