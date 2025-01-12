@@ -36,6 +36,7 @@ import TrackOrderPage from "./pages/TrackOrderPage.jsx";
 import ShopAllRefunds from "./pages/Shop/ShopAllRefunds.jsx";
 import ShopSettingsPage from "./pages/Shop/ShopSettingsPage.jsx";
 //import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
+import ShopInboxPage from "./pages/Shop/ShopInboxPage.jsx";
 
 
 import LoadingSpinner from "./components/LoadingSpinner";
@@ -58,6 +59,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import { get } from "mongoose";
 import ShopSettings from "./components/Shop/ShopSettings.jsx";
 import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
+import UserInbox from "./pages/UserInbox.jsx";
 
 
 
@@ -234,6 +236,14 @@ function App() {
             }
           />
           <Route
+            path="/shopdashboard-messages"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopInboxPage />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
             path="/seller/activation/:activation_token"
             element={<SellerActivationPage />}
           />
@@ -243,6 +253,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inbox"
+            element={
+              <ProtectedRoute>
+                <UserInbox />
               </ProtectedRoute>
             }
           />
