@@ -8,7 +8,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { backend_url } from "../../server";
+import { backend_url,server } from "../../server";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
@@ -20,6 +20,7 @@ import { addTocart } from "../../redux/actions/cart";
 import { toast } from "react-toastify";
 import { useAuthStore } from "../../store/authStore";
 import Ratings from "./Ratings";
+import axios from "axios";
 
 const ProductDetails = ({ data }) => {
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -52,8 +53,29 @@ const ProductDetails = ({ data }) => {
     setCount(count + 1);
   };
 
-  const handleMessageSubmit = () => {
-    navigate("/inbox?conversation=507sjghslfjwgsssdfh84");
+  const handleMessageSubmit = async () => {
+    if (user) {
+      const groupTitle = data._id + user._id;
+      const userId = user._id;
+      const sellerId = data.shop._id;
+      console.log("userID: ",userId);
+      console.log("sellerID: ",sellerId);
+      console.log("groupTitle: ",groupTitle);
+      await axios.post(`${server}/conversation/create-new-conversation`, {
+          groupTitle,
+          userId,
+          sellerId,
+        })
+        .then((res) => {
+          console.log("success");
+          navigate(`/inbox?${res.data.conversation._id}`);
+        })
+        .catch((error) => {
+          toast.error(error.response.data.message);
+        });
+    } else {
+      toast.error("Please login to create a conversation");
+    }
   };
 
   const removeFromWishlistHandler = (data) => {
@@ -191,7 +213,7 @@ const ProductDetails = ({ data }) => {
                 <div className="flex items-center pt-8">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
                     <img
-                      src={`${backend_url}${data?.shop?.avatar}`}
+                      src={`${data.shop.avatar?.url}`}
                       alt=""
                       className="w-[50px] h-[50px] rounded-full mr-2"
                     />
