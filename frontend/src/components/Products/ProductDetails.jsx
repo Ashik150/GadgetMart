@@ -8,7 +8,7 @@ import {
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { Link } from "react-router-dom";
-import { backend_url,server } from "../../server";
+import { backend_url, server } from "../../server";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getAllProductsShop } from "../../redux/actions/product";
@@ -27,11 +27,14 @@ const ProductDetails = ({ data }) => {
   const { cart } = useSelector((state) => state.cart);
   const [count, setCount] = useState(1);
   const [click, setClick] = useState(false);
+  const [Seller, setSeller] = useState("");
   const [select, setSelect] = useState(1);
   const navigate = useNavigate();
   const { products } = useSelector((state) => state.products);
+  const { seller } = useSelector((state) => state.seller);
   const { user } = useAuthStore();
   const dispatch = useDispatch();
+  //console.log(data);
 
   useEffect(() => {
     dispatch(getAllProductsShop(data && data?.shop._id));
@@ -40,8 +43,13 @@ const ProductDetails = ({ data }) => {
     } else {
       setClick(false);
     }
-  }, [data, wishlist]);
 
+    if (data && data.shop && seller && seller._id === data.shop._id) {
+      setSeller(seller); // Set the entire seller object
+    }
+  }, [data, wishlist, seller]);
+
+  console.log("Seller: ", Seller.avatar?.url);
 
   const decrementCount = () => {
     if (count > 1) {
@@ -58,14 +66,14 @@ const ProductDetails = ({ data }) => {
       const groupTitle = data._id + user._id;
       const userId = user._id;
       const sellerId = data.shop._id;
-      console.log("userID: ",userId);
-      console.log("sellerID: ",sellerId);
-      console.log("groupTitle: ",groupTitle);
+      console.log("userID: ", userId);
+      console.log("sellerID: ", sellerId);
+      console.log("groupTitle: ", groupTitle);
       await axios.post(`${server}/conversation/create-new-conversation`, {
-          groupTitle,
-          userId,
-          sellerId,
-        })
+        groupTitle,
+        userId,
+        sellerId,
+      })
         .then((res) => {
           console.log("success");
           navigate(`/inbox?${res.data.conversation._id}`);
@@ -212,11 +220,11 @@ const ProductDetails = ({ data }) => {
                 </div>
                 <div className="flex items-center pt-8">
                   <Link to={`/shop/preview/${data?.shop._id}`}>
-                    <img
-                      src={`${data.shop.avatar?.url}`}
-                      alt=""
-                      className="w-[50px] h-[50px] rounded-full mr-2"
-                    />
+                      <img
+                        src={`${Seller.avatar?.url}`} // Adjust the field name for the seller's avatar URL
+                        alt="Seller Avatar"
+                        className="w-[50px] h-[50px] rounded-full mr-2"
+                      />
                   </Link>
                   <div className="pr-8">
                     <Link to={`/shop/preview/${data?.shop._id}`}>
@@ -240,13 +248,13 @@ const ProductDetails = ({ data }) => {
               </div>
             </div>
           </div>
-          <ProductDetailsInfo data={data} products={products} totalReviewsLength={totalReviewsLength} averageRating={averageRating} />
+          <ProductDetailsInfo data={data} products={products} totalReviewsLength={totalReviewsLength} averageRating={averageRating} Seller={Seller} />
         </div>
       ) : null}
     </div>
   );
 };
-const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating }) => {
+const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating, Seller }) => {
   const [active, setActive] = useState(1);
   return (
     <div className="bg-[#f5f6fb] px-3 800px:px-10 py-2 rounded  ">
@@ -333,12 +341,12 @@ const ProductDetailsInfo = ({ data, products, totalReviewsLength, averageRating 
         <div className="w-full block 800px:flex p-5">
           <div className="w-full 800px:w-[50%]">
             <Link to={`/shop/preview/${data?.shop._id}`}>
-              <div className="flex items-center">
-                <img
-                  src={`${backend_url}${data?.shop?.avatar?.url}`}
-                  alt=""
-                  className="w-[50px] h-[50px] rounded-full"
-                />
+              <div className="flex items-center">         
+                  <img
+                    src={`${Seller.avatar?.url}`}
+                    alt="default avatar"
+                    className="w-[50px] h-[50px] rounded-full"
+                  />
                 <div className="pl-3">
                   <h3 className={`${styles.shop_name} pb-1 pt-1`}>
                     {data.shop.name}
