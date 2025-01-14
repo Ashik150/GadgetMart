@@ -31,7 +31,8 @@ const ShopInfo = ({ isOwner }) => {
     axios.get(`${server}/shop/logout`,{
       withCredentials: true,
     });
-    window.location.reload();
+    localStorage.removeItem("seller_token");
+    window.location.href = "/shop-login";
   };
 
   const totalReviewsLength =
