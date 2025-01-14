@@ -157,18 +157,22 @@ const Header = ({ activeHeading }) => {
               <div className="relative cursor-pointer mr-[15px]"
                 onClick={() => setOpenWishlist(true)}>
                 <AiOutlineHeart size={30} color="rgb(255 255 255/83%)" />
+                {user != null && (
                 <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
                   {wishlist && wishlist.length}
                 </span>
+                )}
               </div>
               <div
                 className="relative cursor-pointer mr-[15px]"
                 onClick={() => setOpenCart(true)}
               >
                 <AiOutlineShoppingCart size={30} color="rgb(255 255 255/83%)" />
+                {user != null && (
                 <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
                   {cart && cart.length}
                 </span>
+                )}
               </div>
 
               <div className="relative cursor-pointer mr-[15px]">
