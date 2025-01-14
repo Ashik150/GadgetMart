@@ -17,11 +17,12 @@ import WishList from "../WishList/WishList";
 import { useSelector } from "react-redux";
 import { set } from "mongoose";
 import { useAuthStore } from "../../store/authStore";
+import { toast } from "react-toastify";
 
 
 
 const Header = ({ activeHeading }) => {
-  const {user} = useAuthStore();
+  const { user } = useAuthStore();
   const { wishlist } = useSelector((state) => state.wishlist);
   const { cart } = useSelector((state) => state.cart);
   const { allProducts } = useSelector((state) => state.products);
@@ -155,28 +156,40 @@ const Header = ({ activeHeading }) => {
           <div className="flex">
             <div className={styles.noramlFlex}>
               <div className="relative cursor-pointer mr-[15px]"
-                onClick={() => setOpenWishlist(true)}>
+                onClick={() => {
+                  if (user !== null) {
+                    setOpenWishlist(true)
+                  } else {
+                    toast.error("Please login to view wishlist");
+                  }
+                }}>
                 <AiOutlineHeart size={30} color="rgb(255 255 255/83%)" />
                 {user != null && (
-                <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
-                  {wishlist && wishlist.length}
-                </span>
+                  <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
+                    {wishlist && wishlist.length}
+                  </span>
                 )}
               </div>
               <div
                 className="relative cursor-pointer mr-[15px]"
-                onClick={() => setOpenCart(true)}
+                onClick={() => {
+                  if (user !== null) {
+                    setOpenCart(true)
+                  } else {
+                    toast.error("Please login to view cart");
+                  }
+                }}
               >
                 <AiOutlineShoppingCart size={30} color="rgb(255 255 255/83%)" />
                 {user != null && (
-                <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
-                  {cart && cart.length}
-                </span>
+                  <span className="absolute right-0 top-0 rounded-full bg-[#00FF40] w-4 h-4 top right p-0 m-0 text-black font-mono text-[12px] leading-tight text-center">
+                    {cart && cart.length}
+                  </span>
                 )}
               </div>
 
               <div className="relative cursor-pointer mr-[15px]">
-                {user===null ? (
+                {user === null ? (
                   <Link to="/login">
                     <CgProfile size={30} color="rgb(255 255 255/83%)" />
                   </Link>
