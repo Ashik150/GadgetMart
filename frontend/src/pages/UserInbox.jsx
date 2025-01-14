@@ -10,7 +10,7 @@ import { AiOutlineArrowRight, AiOutlineSend } from "react-icons/ai";
 import { TfiGallery } from "react-icons/tfi";
 import styles from "../styles/styles";
 import { useAuthStore } from "../store/authStore";
-const ENDPOINT = "https://localhost:4000/";
+const ENDPOINT = "http://localhost:4000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const UserInbox = () => {
@@ -70,6 +70,8 @@ const UserInbox = () => {
       });
     }
   }, [user]);
+
+  console.log("Online Users: ",onlineUsers);
 
   const onlineCheck = (chat) => {
     const chatMembers = chat.members.find((member) => member !== user?._id);

@@ -9,8 +9,7 @@ import styles from "../../styles/styles";
 import { TfiGallery } from "react-icons/tfi";
 import socketIO from "socket.io-client";
 import { format } from "timeago.js";
-import { useAuthStore } from "../../store/authStore";
-const ENDPOINT = "https://localhost:4000/";
+const ENDPOINT = "http://localhost:4000/";
 const socketId = socketIO(ENDPOINT, { transports: ["websocket"] });
 
 const DashboardMessages = () => {
@@ -74,6 +73,7 @@ const DashboardMessages = () => {
             });
         }
     }, [seller]);
+    console.log("Online USers: ",onlineUsers);
 
     const onlineCheck = (chat) => {
         const chatMembers = chat.members.find((member) => member !== seller?._id);
@@ -283,9 +283,6 @@ const MessageList = ({
             try {
                 const res = await axios.get(`${server}/user/user-info/${userId}`);
                 setUser(res.data.user);
-                const us = useAuthStore();
-                console.log("User: ",us);
-                if(us!==null) setActive(1);
 
             } catch (error) {
                 console.log(error);
@@ -312,7 +309,7 @@ const MessageList = ({
                     alt=""
                     className="w-[50px] h-[50px] rounded-full"
                 />
-                {active ? (
+                {online ? (
                     <div className="w-[12px] h-[12px] bg-green-400 rounded-full absolute top-[2px] right-[2px]" />
                 ) : (
                     <div className="w-[12px] h-[12px] bg-[#c7b9b9] rounded-full absolute top-[2px] right-[2px]" />
