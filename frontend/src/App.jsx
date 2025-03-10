@@ -60,6 +60,7 @@ import { get } from "mongoose";
 import ShopSettings from "./components/Shop/ShopSettings.jsx";
 import ShopWithDrawMoneyPage from "./pages/Shop/ShopWithDrawMoneyPage.jsx";
 import UserInbox from "./pages/UserInbox.jsx";
+import ChatBot from "./pages/ChatBot.jsx";
 
 
 
@@ -149,6 +150,13 @@ function App() {
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route
+            path="/chatbot"
+            element={
+                            <ChatBot />
+            
+            }
+          />
+          <Route
             path="profilepage"
             element={
               <ProtectedRoute>
@@ -160,41 +168,62 @@ function App() {
           <Route path="/shop-create" element={<ShopCreatePage />} />
           <Route path="/shop-login" element={<ShopLoginPage />} />
           <Route path="/shop/preview/:id" element={<ShopPreviewPage />} />
-          <Route path="/shopdashboard" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopDashboardPage />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-create-product" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopCreateProduct />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-create-event" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopCreateEvents />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-orders" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopAllOrders />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-products" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopAllProducts />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-events" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopAllEvents />
-            </SellerProtectedRoute>
-          } />
-          <Route path="/shopdashboard-coupons" element={
-            <SellerProtectedRoute isSeller={isSeller}>
-              <ShopAllCoupons />
-            </SellerProtectedRoute>
-          } />
+          <Route
+            path="/shopdashboard"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopDashboardPage />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-create-product"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopCreateProduct />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-create-event"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopCreateEvents />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-orders"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopAllOrders />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-products"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopAllProducts />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-events"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopAllEvents />
+              </SellerProtectedRoute>
+            }
+          />
+          <Route
+            path="/shopdashboard-coupons"
+            element={
+              <SellerProtectedRoute isSeller={isSeller}>
+                <ShopAllCoupons />
+              </SellerProtectedRoute>
+            }
+          />
           <Route
             path="/shop/:id"
             element={
@@ -247,7 +276,7 @@ function App() {
             path="/seller/activation/:activation_token"
             element={<SellerActivationPage />}
           />
-            <Route path="/order/success" element={<OrderSuccessPage />} />
+          <Route path="/order/success" element={<OrderSuccessPage />} />
           <Route
             path="/dashboard"
             element={
