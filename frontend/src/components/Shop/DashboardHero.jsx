@@ -44,7 +44,9 @@ const DashboardHero = () => {
      if (order.cart && order.cart.length > 0) {
        order.cart.forEach((product) => {
          if (product.discountPrice && product.qty) {
-           totalAmount += product.discountPrice * product.qty;
+           totalAmount +=
+             product.discountPrice * product.qty +
+             product.discountPrice * product.qty * (10 / 100);
          }
        });
      }

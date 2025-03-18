@@ -52,7 +52,9 @@ const WithdrawMoney = () => {
         
 
          if (product.discountPrice && product.qty) {
-           totalAmount += product.discountPrice * product.qty;
+           totalAmount +=
+             product.discountPrice * product.qty +
+             (product.discountPrice * product.qty)*(10/100);
          }
        });
      }
