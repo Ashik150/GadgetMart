@@ -8,17 +8,52 @@ import { getAllOrdersOfShop } from "../../redux/actions/order";
 import { getAllProductsShop } from "../../redux/actions/product";
 import { Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import axios from "axios";
 
 const DashboardHero = () => {
   const dispatch = useDispatch();
   const { orders } = useSelector((state) => state.order);
   const { seller } = useSelector((state) => state.seller);
   const { products } = useSelector((state) => state.products);
+    const [deliveredOrders, setDeliveredOrders] = useState([]);
+      const [totalPrice, setTotalPrice] = useState(0);
+  const fetchDeliveredOrders = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/order/delivered"
+      );
+      if (Array.isArray(response.data)) {
+        setDeliveredOrders(response.data);
+        calculateTotalPrice(response.data);
+        calculateCategorySales(response.data);
+      } else {
+        setDeliveredOrders([]);
+      }
+    } catch (error) {
+      console.error("Error fetching delivered orders", error);
+      setDeliveredOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  const calculateTotalPrice = (orders) => {
+    let total = 0;
+    orders.forEach((order) => {
+      order.cart.forEach((product) => {
+        total += order.totalPrice * product.qty;
+      });
+    });
+    setTotalPrice(total);
+  };
   useEffect(() => {
      dispatch(getAllOrdersOfShop(seller._id));
      dispatch(getAllProductsShop(seller._id));
+    
   }, [dispatch]);
+  useEffect(()=>{
+     fetchDeliveredOrders();
+  },[])
 
   const availableBalance = seller?.availableBalance.toFixed(2);
 
@@ -74,8 +109,8 @@ const DashboardHero = () => {
   ];
 
   const row = [];
-
   orders && orders.forEach((item) => {
+    
     row.push({
         id: item._id,
         itemsQty: item.cart.reduce((acc, item) => acc + item.qty, 0),
@@ -98,12 +133,12 @@ const DashboardHero = () => {
               className={`${styles.productTitle} !text-[18px] leading-5 !font-[400] text-[#00000085]`}
             >
               Account Balance{" "}
-              <span className="text-[16px]">(with 10% service charge)</span>
+              <span className="text-[16px]"></span>
             </h3>
           </div>
-          <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{availableBalance} BDT</h5>
+          <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{totalPrice.toFixed(2)} BDT</h5>
           <Link to="/shopdashboard-withdraw-money">
-            <h5 className="pt-4 pl-[2] text-[#077f9c]">Withdraw Money</h5>
+            <h5 className="pt-4 pl-[2] text-[#077f9c]">View Sales</h5>
           </Link>
         </div>
 
