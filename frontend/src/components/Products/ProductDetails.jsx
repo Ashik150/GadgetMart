@@ -62,8 +62,6 @@ const ProductDetails = ({ data }) => {
   const incrementCount = () => {
     if(count<data.stock) {
     setCount(count + 1);
-    } else {
-      toast.error("Product stock limited!");
     }
   };
 
