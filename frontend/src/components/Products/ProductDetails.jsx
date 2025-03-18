@@ -56,9 +56,13 @@ const ProductDetails = ({ data }) => {
       setCount(count - 1);
     }
   };
+  // Increment the count and check if the count is less than the stock
+  // If the count is less than the stock, increment the count
 
   const incrementCount = () => {
+    if(count<data.stock) {
     setCount(count + 1);
+    }
   };
 
   const handleMessageSubmit = async () => {
