@@ -16,7 +16,7 @@ const DashboardHero = () => {
   const { seller } = useSelector((state) => state.seller);
   const { products } = useSelector((state) => state.products);
     const [deliveredOrders, setDeliveredOrders] = useState([]);
-      const [totalPrice, setTotalPrice] = useState(0);
+      const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const fetchDeliveredOrders = async () => {
     try {
       const response = await axios.get(
@@ -24,7 +24,7 @@ const DashboardHero = () => {
       );
       if (Array.isArray(response.data)) {
         setDeliveredOrders(response.data);
-        calculateTotalPrice(response.data);
+        calculateTotalSales(response.data);
         calculateCategorySales(response.data);
       } else {
         setDeliveredOrders([]);
@@ -37,15 +37,22 @@ const DashboardHero = () => {
     }
   };
 
-  const calculateTotalPrice = (orders) => {
-    let total = 0;
-    orders.forEach((order) => {
-      order.cart.forEach((product) => {
-        total += order.totalPrice * product.qty;
-      });
-    });
-    setTotalPrice(total);
-  };
+ const calculateTotalSales = (orders) => {
+   let totalAmount = 0;
+
+   orders.forEach((order) => {
+     if (order.cart && order.cart.length > 0) {
+       order.cart.forEach((product) => {
+         if (product.discountPrice && product.qty) {
+           totalAmount += product.discountPrice * product.qty;
+         }
+       });
+     }
+   });
+
+   setTotalSalesAmount(totalAmount);
+ };
+
   useEffect(() => {
      dispatch(getAllOrdersOfShop(seller._id));
      dispatch(getAllProductsShop(seller._id));
@@ -136,7 +143,7 @@ const DashboardHero = () => {
               <span className="text-[16px]"></span>
             </h3>
           </div>
-          <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{totalPrice.toFixed(2)} BDT</h5>
+          <h5 className="pt-2 pl-[36px] text-[22px] font-[500]">{totalSalesAmount.toFixed(2)} BDT</h5>
           <Link to="/shopdashboard-withdraw-money">
             <h5 className="pt-4 pl-[2] text-[#077f9c]">View Sales</h5>
           </Link>

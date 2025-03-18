@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { Bar } from "react-chartjs-2";
@@ -12,7 +10,7 @@ Chart.register(...registerables);
 const WithdrawMoney = () => {
   const [deliveredOrders, setDeliveredOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [totalSalesAmount, setTotalSalesAmount] = useState(0);
   const [categorySales, setCategorySales] = useState({});
   const [productPrices, setProductPrices] = useState({});
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -25,9 +23,11 @@ const WithdrawMoney = () => {
 
   const fetchDeliveredOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/order/delivered");
+      const response = await axios.get(
+        "http://localhost:5000/api/order/delivered"
+      );
       if (Array.isArray(response.data)) {
-         console.log("All Delivered Orders Data:", response.data);
+        console.log("All Delivered Orders Data:", response.data);
         setDeliveredOrders(response.data);
         calculateTotalSales(response.data);
         calculateCategorySales(response.data);
@@ -43,47 +43,49 @@ const WithdrawMoney = () => {
     }
   };
 
-  const calculateTotalSales = (orders) => {
-    let total = 0;
-    let amount=0;
-    orders.forEach((order) => {
-      order.cart.forEach((product) => {
-        total += product.qty;
-        amount += order.totalPrice * product.qty;
-      });
-    });
-    setTotalQuantity(amount);
-  };
+ const calculateTotalSales = (orders) => {
+   let totalAmount = 0;
+
+   orders.forEach((order) => {
+     if (order.cart && order.cart.length > 0) {
+       order.cart.forEach((product) => {
+        
+
+         if (product.discountPrice && product.qty) {
+           totalAmount += product.discountPrice * product.qty;
+         }
+       });
+     }
+   });
+
+  
+   setTotalSalesAmount(totalAmount);
+ };
+
 
   const calculateCategorySales = (orders) => {
     const salesByCategory = {};
     orders.forEach((order) => {
       order.cart.forEach((product) => {
         const category = product.category || "Uncategorized";
-        salesByCategory[category] = (salesByCategory[category] || 0) + order.totalPrice*product.qty;
+        salesByCategory[category] =
+          (salesByCategory[category] || 0) + product.qty * product.discountPrice;
       });
     });
     setCategorySales(salesByCategory);
   };
+
   const calculateProductPrices = (orders) => {
     const productPrices = {};
-
     orders.forEach((order) => {
       order.cart.forEach((product) => {
         const category = product.category || "Uncategorized";
-        const productKey = `${category}-${product.name}`; // Unique key per product
-
-        // Calculate individual product price
-        const individualPrice = (order.totalPrice * product.qty) / product.qty;
-
-        // Store in productPrices object
-        productPrices[productKey] = individualPrice;
+        const productKey = `${category}-${product.name}`;
+        productPrices[productKey] = product.discountPrice; // Directly assigning the product price
       });
     });
-
     setProductPrices(productPrices);
   };
-  
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
@@ -97,7 +99,6 @@ const WithdrawMoney = () => {
 
   const groupProductsByName = (orders, category) => {
     const groupedProducts = {};
-
     orders.forEach((order) => {
       order.cart.forEach((product) => {
         if (product.category === category) {
@@ -106,8 +107,8 @@ const WithdrawMoney = () => {
               quantity: product.qty,
               images: product.images
                 ? product.images.map((img) => img.url)
-                : [], // Store all images
-              price: product.totalPrice,
+                : [],
+              price: product.price,
             };
           } else {
             groupedProducts[product.name].quantity += product.qty;
@@ -120,18 +121,23 @@ const WithdrawMoney = () => {
         }
       });
     });
-
     return groupedProducts;
   };
-
 
   const chartData = {
     labels: Object.keys(categorySales),
     datasets: [
       {
-        label: "total Sales ",
+        label: "Total Sales (BDT)",
         data: Object.values(categorySales),
-        backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff", "#ff9f40"],
+        backgroundColor: [
+          "#ff6384",
+          "#36a2eb",
+          "#ffce56",
+          "#4bc0c0",
+          "#9966ff",
+          "#ff9f40",
+        ],
         borderColor: "#ffffff",
         borderWidth: 1,
       },
@@ -152,8 +158,13 @@ const WithdrawMoney = () => {
   return (
     <div className="w-full h-[90vh] p-8">
       <div className="w-full bg-white h-full rounded flex items-center justify-center flex-col">
-        <h5 className="text-[20px] pb-4">Total Sales Amount : {totalQuantity} BDT</h5>
-        <div className={`${styles.button} text-white !h-[42px] !rounded`} onClick={() => setOpen(true)}>
+        <h5 className="text-[20px] pb-4">
+          Total Sales Amount: {totalSalesAmount} BDT
+        </h5>
+        <div
+          className={`${styles.button} text-white !h-[42px] !rounded`}
+          onClick={() => setOpen(true)}
+        >
           View Sales
         </div>
       </div>
@@ -162,17 +173,25 @@ const WithdrawMoney = () => {
         <div className="w-full h-screen z-[9999] fixed top-0 left-0 flex items-center justify-center bg-[#0000004e]">
           <div className="w-[100%] 800px:w-[70%] bg-white shadow rounded h-[80vh] overflow-y-scroll p-3">
             <div className="w-full flex justify-end">
-              <RxCross1 size={25} onClick={() => setOpen(false)} className="cursor-pointer" />
+              <RxCross1
+                size={25}
+                onClick={() => setOpen(false)}
+                className="cursor-pointer"
+              />
             </div>
 
             {!isCategoryView ? (
               <>
-                <h3 className="text-[22px] font-Poppins text-center font-[600]">Sales Overview</h3>
+                <h3 className="text-[22px] font-Poppins text-center font-[600]">
+                  Sales Overview
+                </h3>
                 <div className="w-full h-96 mt-4">
                   <Bar data={chartData} options={chartOptions} />
                 </div>
                 <div className="mt-6 text-center">
-                  <h3 className="text-lg font-medium text-gray-700 mb-2">View Sales by Category:</h3>
+                  <h3 className="text-lg font-medium text-gray-700 mb-2">
+                    View Sales by Category:
+                  </h3>
                   <select
                     className="w-64 p-2 border border-gray-300 rounded-lg bg-white focus:ring focus:ring-blue-300"
                     onChange={(e) => handleCategoryChange(e.target.value)}
@@ -205,8 +224,13 @@ const WithdrawMoney = () => {
                 </h3>
 
                 <div className="flex flex-col gap-4">
-                  {Object.keys(groupProductsByName(deliveredOrders, selectedCategory)).map((productName) => {
-                    const product = groupProductsByName(deliveredOrders, selectedCategory)[productName];
+                  {Object.keys(
+                    groupProductsByName(deliveredOrders, selectedCategory)
+                  ).map((productName) => {
+                    const product = groupProductsByName(
+                      deliveredOrders,
+                      selectedCategory
+                    )[productName];
                     return (
                       <div
                         key={productName}
@@ -232,9 +256,6 @@ const WithdrawMoney = () => {
                         <p className="text-gray-600">
                           Quantity: {product.quantity}
                         </p>
-
-                        <p className="text-gray-600"></p>
-
                         <p className="text-gray-600">
                           Price:{" "}
                           {productPrices[
