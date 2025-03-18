@@ -107,18 +107,17 @@ const WithdrawMoney = () => {
           if (!groupedProducts[product.name]) {
             groupedProducts[product.name] = {
               quantity: product.qty,
-              images: product.images
-                ? product.images.map((img) => img.url)
-                : [],
+              images: product.images && product.images.length > 0
+                ? product.images[0].url : null,
               price: product.price,
             };
           } else {
             groupedProducts[product.name].quantity += product.qty;
-            product.images?.forEach((img) => {
-              if (!groupedProducts[product.name].images.includes(img.url)) {
-                groupedProducts[product.name].images.push(img.url);
-              }
-            });
+            // product.images?.forEach((img) => {
+            //   if (!groupedProducts[product.name].images.includes(img.url)) {
+            //     groupedProducts[product.name].images.push(img.url);
+            //   }
+            // });
           }
         }
       });
@@ -242,15 +241,15 @@ const WithdrawMoney = () => {
                           {productName}
                         </h4>
                         <div className="flex gap-2 mt-2">
-                          {product.images.length > 0 ? (
-                            product.images.map((image, index) => (
+                          {product.images ? (
+                           
                               <img
-                                key={index}
-                                src={image}
+                    
+                                src={product.images}
                                 alt={productName}
                                 className="w-32 h-32 object-cover"
                               />
-                            ))
+                        
                           ) : (
                             <p className="text-gray-400">No Image Available</p>
                           )}
