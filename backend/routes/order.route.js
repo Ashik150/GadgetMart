@@ -1,5 +1,5 @@
 import express from 'express';
-import {createOrder,getAllOrdersOfUser,getAllOrdersOfSeller,updateOrderStatus,requestOrderRefund,acceptOrderRefund, getDeliveredOrders} from '../controllers/order.controller.js';
+import {createOrder,getAllOrdersOfUser,getAllOrdersOfSeller,updateOrderStatus,requestOrderRefund,acceptOrderRefund, getDeliveredOrders, getProductCategoryDistribution} from '../controllers/order.controller.js';
 const router = express.Router();
 import { isSeller} from '../middleware/auth.middleware.js';
 
@@ -10,6 +10,8 @@ router.put("/update-order-status/:id", isSeller, updateOrderStatus);
 router.put("/order-refund/:id", requestOrderRefund);
 router.put("/order-refund-success/:id", isSeller, acceptOrderRefund);
 router.get("/delivered", getDeliveredOrders); 
+router.get("/get-category-distribution/:email", getProductCategoryDistribution);
+
 
 
 export default router;
