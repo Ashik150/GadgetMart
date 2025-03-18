@@ -5,27 +5,27 @@ import { Link } from "react-router-dom";
 const Hero = () => {
   return (
     <div
-      className={`relative min-h-[70vh] 800px:min-h-[80vh] w-full bg-no-report ${styles.noramlFlex}`}
+      className={`relative min-h-[70vh] 800px:min-h-[80vh] w-full bg-no-repeat bg-cover ${styles.noramlFlex}`}
       style={{
         backgroundImage:
-          "url(https://themes.rslahmed.dev/rafcart/assets/images/banner-2.jpg)",
+          "url(https://img.freepik.com/free-photo/christmas-present-shopping-cart_24837-517.jpg?t=st=1742313439~exp=1742317039~hmac=f4ca66b265535e926905cea3c7289ea8126ca33d50b70b5c6c8a3580fa71c8d9&w=1380)",
       }}
     >
       <div className={`${styles.section} w-[90%] 800px:w-[60%]`}>
         <h1 className="text-[35px] leading-[1.2] 800px:text-[60px] text-[#3d3a3a] font-[600] capitalize">
           Gadget Mart
         </h1>
-        <p className="pt-5 text-[16px] font-[Poppins] font-[400] text-[#000000ba]                      ">
+        <p className="pt-5 text-[16px] font-[Poppins] font-[400] text-[#000000ba]">
           Whether you're building your dream PC, upgrading your gear, or looking
-          for the latest gadgets, we've got everything <br />
+          for the latest gadgets, we've got <br /> everything 
           you need from powerful GPUs to sleek monitors, top of the line RAM,
-          and more. Explore our wide range of high <br />
+          and more. Explore our <br /> wide range of high 
           quality tech products and find the perfect fit for your needs. Let's
-          power up your tech world!"
+          power up your tech world!
         </p>
         <Link to="/products" className="inline-block">
           <div className={`${styles.button} mt-5`}>
-            <span className="text-[#fff] text-[18px] ">Shop Now</span>
+            <span className="text-[#fff] text-[18px]">Shop Now</span>
           </div>
         </Link>
       </div>
