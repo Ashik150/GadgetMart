@@ -154,4 +154,18 @@ export const createNewReview = async (req, res, next) => {
         return next(new ErrorHandler(error, 400));
     }
 };
+export const getBestSellingProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find({ sold_out: { $gt: 1 } })
+      .sort({ sold_out: -1 }) 
+      .limit(5); 
+    res.status(200).json({
+      success: true,
+      products,
+    });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 400));
+  }
+};
+
 
