@@ -1,329 +1,251 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllOrdersOfShop } from "../../redux/actions/order";
-import styles from "../../styles/styles";
+
+
+import React, { useState, useEffect } from "react";
 import { RxCross1 } from "react-icons/rx";
+import { Bar } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 import axios from "axios";
-import { server } from "../../server";
-import { toast } from "react-toastify";
-import { loadSeller } from "../../redux/actions/user";
-import { AiOutlineDelete } from "react-icons/ai";
+import styles from "../../styles/styles";
+
+Chart.register(...registerables);
 
 const WithdrawMoney = () => {
+  const [deliveredOrders, setDeliveredOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+  const [categorySales, setCategorySales] = useState({});
+  const [productPrices, setProductPrices] = useState({});
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [isCategoryView, setIsCategoryView] = useState(false);
   const [open, setOpen] = useState(false);
-  const dispatch = useDispatch();
-  const { seller } = useSelector((state) => state.seller);
-  const [paymentMethod, setPaymentMethod] = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState(50);
-  const [bankInfo, setBankInfo] = useState({
-    bankName: "",
-    bankCountry: "",
-    bankSwiftCode: null,
-    bankAccountNumber: null,
-    bankHolderName: "",
-    bankAddress: "",
-  });
 
   useEffect(() => {
-    dispatch(getAllOrdersOfShop(seller._id));
-  }, [dispatch]);
+    fetchDeliveredOrders();
+  }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const withdrawMethod = {
-      bankName: bankInfo.bankName,
-      bankCountry: bankInfo.bankCountry,
-      bankSwiftCode: bankInfo.bankSwiftCode,
-      bankAccountNumber: bankInfo.bankAccountNumber,
-      bankHolderName: bankInfo.bankHolderName,
-      bankAddress: bankInfo.bankAddress,
-    };
-
-    setPaymentMethod(false);
-
-    await axios
-      .put(
-        `${server}/shop/update-payment-methods`,
-        {
-          withdrawMethod,
-        },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        toast.success("Withdraw method added successfully!");
-        dispatch(loadSeller());
-        setBankInfo({
-          bankName: "",
-          bankCountry: "",
-          bankSwiftCode: null,
-          bankAccountNumber: null,
-          bankHolderName: "",
-          bankAddress: "",
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.data.message);
-      });
-  };
-
-  const deleteHandler = async () => {
-    await axios
-      .delete(`${server}/shop/delete-withdraw-method`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        toast.success("Withdraw method deleted successfully!");
-        dispatch(loadSeller());
-      });
-  };
-
-  const error = () => {
-    toast.error("You not have enough balance to withdraw!");
-  };
-
-  const withdrawHandler = async () => {
-    if (withdrawAmount < 50 || withdrawAmount > availableBalance) {
-      toast.error("You can't withdraw this amount!");
-    } else {
-      const amount = withdrawAmount;
-      await axios
-        .post(
-          `${server}/withdraw/create-withdraw-request`,
-          { amount },
-          { withCredentials: true }
-        )
-        .then((res) => {
-          toast.success("Withdraw money request is successful!");
-        });
+  const fetchDeliveredOrders = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/order/delivered");
+      if (Array.isArray(response.data)) {
+         console.log("All Delivered Orders Data:", response.data);
+        setDeliveredOrders(response.data);
+        calculateTotalSales(response.data);
+        calculateCategorySales(response.data);
+        calculateProductPrices(response.data);
+      } else {
+        setDeliveredOrders([]);
+      }
+    } catch (error) {
+      console.error("Error fetching delivered orders", error);
+      setDeliveredOrders([]);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const availableBalance = seller?.availableBalance.toFixed(2);
+  const calculateTotalSales = (orders) => {
+    let total = 0;
+    let amount=0;
+    orders.forEach((order) => {
+      order.cart.forEach((product) => {
+        total += product.qty;
+        amount += order.totalPrice * product.qty;
+      });
+    });
+    setTotalQuantity(amount);
+  };
+
+  const calculateCategorySales = (orders) => {
+    const salesByCategory = {};
+    orders.forEach((order) => {
+      order.cart.forEach((product) => {
+        const category = product.category || "Uncategorized";
+        salesByCategory[category] = (salesByCategory[category] || 0) + order.totalPrice*product.qty;
+      });
+    });
+    setCategorySales(salesByCategory);
+  };
+  const calculateProductPrices = (orders) => {
+    const productPrices = {};
+
+    orders.forEach((order) => {
+      order.cart.forEach((product) => {
+        const category = product.category || "Uncategorized";
+        const productKey = `${category}-${product.name}`; // Unique key per product
+
+        // Calculate individual product price
+        const individualPrice = (order.totalPrice * product.qty) / product.qty;
+
+        // Store in productPrices object
+        productPrices[productKey] = individualPrice;
+      });
+    });
+
+    setProductPrices(productPrices);
+  };
+  
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setIsCategoryView(true);
+  };
+
+  const goBackToMainPage = () => {
+    setIsCategoryView(false);
+    setSelectedCategory("");
+  };
+
+  const groupProductsByName = (orders, category) => {
+    const groupedProducts = {};
+
+    orders.forEach((order) => {
+      order.cart.forEach((product) => {
+        if (product.category === category) {
+          if (!groupedProducts[product.name]) {
+            groupedProducts[product.name] = {
+              quantity: product.qty,
+              images: product.images
+                ? product.images.map((img) => img.url)
+                : [], // Store all images
+              price: product.totalPrice,
+            };
+          } else {
+            groupedProducts[product.name].quantity += product.qty;
+            product.images?.forEach((img) => {
+              if (!groupedProducts[product.name].images.includes(img.url)) {
+                groupedProducts[product.name].images.push(img.url);
+              }
+            });
+          }
+        }
+      });
+    });
+
+    return groupedProducts;
+  };
+
+
+  const chartData = {
+    labels: Object.keys(categorySales),
+    datasets: [
+      {
+        label: "total Sales ",
+        data: Object.values(categorySales),
+        backgroundColor: ["#ff6384", "#36a2eb", "#ffce56", "#4bc0c0", "#9966ff", "#ff9f40"],
+        borderColor: "#ffffff",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+    },
+    scales: {
+      y: { beginAtZero: true },
+    },
+  };
 
   return (
     <div className="w-full h-[90vh] p-8">
       <div className="w-full bg-white h-full rounded flex items-center justify-center flex-col">
-        <h5 className="text-[20px] pb-4">
-          Available Balance: ${availableBalance}
-        </h5>
-        <div
-          className={`${styles.button} text-white !h-[42px] !rounded`}
-          onClick={() => (availableBalance < 50 ? error() : setOpen(true))}
-        >
-          Withdraw
+        <h5 className="text-[20px] pb-4">Total Sales Amount : {totalQuantity} BDT</h5>
+        <div className={`${styles.button} text-white !h-[42px] !rounded`} onClick={() => setOpen(true)}>
+          View Sales
         </div>
       </div>
+
       {open && (
         <div className="w-full h-screen z-[9999] fixed top-0 left-0 flex items-center justify-center bg-[#0000004e]">
-          <div
-            className={`w-[95%] 800px:w-[50%] bg-white shadow rounded ${
-              paymentMethod ? "h-[80vh] overflow-y-scroll" : "h-[unset]"
-            } min-h-[40vh] p-3`}
-          >
+          <div className="w-[100%] 800px:w-[70%] bg-white shadow rounded h-[80vh] overflow-y-scroll p-3">
             <div className="w-full flex justify-end">
-              <RxCross1
-                size={25}
-                onClick={() => setOpen(false) || setPaymentMethod(false)}
-                className="cursor-pointer"
-              />
+              <RxCross1 size={25} onClick={() => setOpen(false)} className="cursor-pointer" />
             </div>
-            {paymentMethod ? (
-              <div>
-                <h3 className="text-[22px] font-Poppins text-center font-[600]">
-                  Add new Withdraw Method:
-                </h3>
-                <form onSubmit={handleSubmit}>
-                  <div>
-                    <label>
-                      Bank Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name=""
-                      required
-                      value={bankInfo.bankName}
-                      onChange={(e) =>
-                        setBankInfo({ ...bankInfo, bankName: e.target.value })
-                      }
-                      id=""
-                      placeholder="Enter your Bank name!"
-                      className={`${styles.input} mt-2`}
-                    />
-                  </div>
-                  <div className="pt-2">
-                    <label>
-                      Bank Country <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name=""
-                      value={bankInfo.bankCountry}
-                      onChange={(e) =>
-                        setBankInfo({
-                          ...bankInfo,
-                          bankCountry: e.target.value,
-                        })
-                      }
-                      id=""
-                      required
-                      placeholder="Enter your bank Country!"
-                      className={`${styles.input} mt-2`}
-                    />
-                  </div>
-                  <div className="pt-2">
-                    <label>
-                      Bank Swift Code <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
-                      required
-                      value={bankInfo.bankSwiftCode}
-                      onChange={(e) =>
-                        setBankInfo({
-                          ...bankInfo,
-                          bankSwiftCode: e.target.value,
-                        })
-                      }
-                      placeholder="Enter your Bank Swift Code!"
-                      className={`${styles.input} mt-2`}
-                    />
-                  </div>
 
-                  <div className="pt-2">
-                    <label>
-                      Bank Account Number{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      name=""
-                      id=""
-                      value={bankInfo.bankAccountNumber}
-                      onChange={(e) =>
-                        setBankInfo({
-                          ...bankInfo,
-                          bankAccountNumber: e.target.value,
-                        })
-                      }
-                      required
-                      placeholder="Enter your bank account number!"
-                      className={`${styles.input} mt-2`}
-                    />
-                  </div>
-                  <div className="pt-2">
-                    <label>
-                      Bank Holder Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name=""
-                      required
-                      value={bankInfo.bankHolderName}
-                      onChange={(e) =>
-                        setBankInfo({
-                          ...bankInfo,
-                          bankHolderName: e.target.value,
-                        })
-                      }
-                      id=""
-                      placeholder="Enter your bank Holder name!"
-                      className={`${styles.input} mt-2`}
-                    />
-                  </div>
-
-                  <div className="pt-2">
-                    <label>
-                      Bank Address <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      name=""
-                      required
-                      id=""
-                      value={bankInfo.bankAddress}
-                      onChange={(e) =>
-                        setBankInfo({
-                          ...bankInfo,
-                          bankAddress: e.target.value,
-                        })
-                      }
-                      placeholder="Enter your bank address!"
-                      className={`${styles.input} mt-2`}
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className={`${styles.button} mb-3 text-white`}
+            {!isCategoryView ? (
+              <>
+                <h3 className="text-[22px] font-Poppins text-center font-[600]">Sales Overview</h3>
+                <div className="w-full h-96 mt-4">
+                  <Bar data={chartData} options={chartOptions} />
+                </div>
+                <div className="mt-6 text-center">
+                  <h3 className="text-lg font-medium text-gray-700 mb-2">View Sales by Category:</h3>
+                  <select
+                    className="w-64 p-2 border border-gray-300 rounded-lg bg-white focus:ring focus:ring-blue-300"
+                    onChange={(e) => handleCategoryChange(e.target.value)}
+                    defaultValue=""
                   >
-                    Add
-                  </button>
-                </form>
-              </div>
+                    <option value="" disabled>
+                      Choose a Category
+                    </option>
+                    {Object.keys(categorySales).map((category) => (
+                      <option key={category} value={category}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </>
             ) : (
               <>
-                <h3 className="text-[22px] font-Poppins">
-                  Available Withdraw Methods:
+                <button
+                  onClick={goBackToMainPage}
+                  className="mb-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
+                  Back
+                </button>
+                <h3 className="text-[22px] font-Poppins text-center font-[600]">
+                  Category: {selectedCategory}
+                </h3>
+                <h3 className="text-lg text-green-600 mb-4">
+                  Total Amount Sold: {categorySales[selectedCategory]}
                 </h3>
 
-                {seller && seller?.withdrawMethod ? (
-                  <div>
-                    <div className="800px:flex w-full justify-between items-center">
-                      <div className="800px:w-[50%]">
-                        <h5>
-                          Account Number:{" "}
-                          {"*".repeat(
-                            seller?.withdrawMethod.bankAccountNumber.length - 3
-                          ) +
-                            seller?.withdrawMethod.bankAccountNumber.slice(-3)}
-                        </h5>
-                        <h5>Bank Name: {seller?.withdrawMethod.bankName}</h5>
-                      </div>
-                      <div className="800px:w-[50%]">
-                        <AiOutlineDelete
-                          size={25}
-                          className="cursor-pointer"
-                          onClick={() => deleteHandler()}
-                        />
-                      </div>
-                    </div>
-                    <br />
-                    <h4>Available Balance: {availableBalance}$</h4>
-                    <br />
-                    <div className="800px:flex w-full items-center">
-                      <input
-                        type="number"
-                        placeholder="Amount..."
-                        value={withdrawAmount}
-                        onChange={(e) => setWithdrawAmount(e.target.value)}
-                        className="800px:w-[100px] w-[full] border 800px:mr-3 p-1 rounded"
-                      />
+                <div className="flex flex-col gap-4">
+                  {Object.keys(groupProductsByName(deliveredOrders, selectedCategory)).map((productName) => {
+                    const product = groupProductsByName(deliveredOrders, selectedCategory)[productName];
+                    return (
                       <div
-                        className={`${styles.button} !h-[42px] text-white`}
-                        onClick={withdrawHandler}
+                        key={productName}
+                        className="p-4 border border-gray-300 rounded-lg bg-gray-50"
                       >
-                        Withdraw
+                        <h4 className="text-lg font-medium text-gray-700">
+                          {productName}
+                        </h4>
+                        <div className="flex gap-2 mt-2">
+                          {product.images.length > 0 ? (
+                            product.images.map((image, index) => (
+                              <img
+                                key={index}
+                                src={image}
+                                alt={productName}
+                                className="w-32 h-32 object-cover"
+                              />
+                            ))
+                          ) : (
+                            <p className="text-gray-400">No Image Available</p>
+                          )}
+                        </div>
+                        <p className="text-gray-600">
+                          Quantity: {product.quantity}
+                        </p>
+
+                        <p className="text-gray-600"></p>
+
+                        <p className="text-gray-600">
+                          Price:{" "}
+                          {productPrices[
+                            `${selectedCategory}-${productName}`
+                          ] || "N/A"}{" "}
+                          BDT
+                        </p>
                       </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="text-[18px] pt-2">
-                      No Withdraw Methods available!
-                    </p>
-                    <div className="w-full flex items-center">
-                      <div
-                        className={`${styles.button} text-[#fff] text-[18px] mt-4`}
-                        onClick={() => setPaymentMethod(true)}
-                      >
-                        Add new
-                      </div>
-                    </div>
-                  </div>
-                )}
+                    );
+                  })}
+                </div>
               </>
             )}
           </div>
