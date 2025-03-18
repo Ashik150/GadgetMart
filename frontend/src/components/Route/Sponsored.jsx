@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels"; // Import the plugin
 import axios from "axios";
 import { useAuthStore } from "../../store/authStore";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+// Register Chart.js components and the datalabels plugin
+ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 const Sponsored = () => {
-  const navigate = useNavigate(); // Initialize navigation
+  const navigate = useNavigate();
   const { user } = useAuthStore();
   const [categoryData, setCategoryData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Redirect to login if user is null (logged out)
     if (!user) {
-      navigate("/login");
+      navigate("/");
       return;
     }
 
@@ -41,13 +42,11 @@ const Sponsored = () => {
     };
 
     fetchCategoryDistribution();
-  }, [user, navigate]); 
+  }, [user, navigate]);
 
-  
   if (!user) {
-    return null; 
+    return null;
   }
-
 
   if (loading) {
     return <div>Loading...</div>;
@@ -57,7 +56,13 @@ const Sponsored = () => {
     return <div>No category data available</div>;
   }
 
- 
+  // Calculate total for percentage calculation
+  const totalValue = categoryData.reduce(
+    (sum, item) => sum + parseFloat(item.percentage),
+    0
+  );
+
+  // Pie Chart Data
   const chartData = {
     labels: categoryData.map((item) => item.category),
     datasets: [
@@ -84,13 +89,42 @@ const Sponsored = () => {
     ],
   };
 
+  // Chart Options with Percentage Display
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            let label = context.label || "";
+            let value = context.raw;
+            let percentage = ((value / totalValue) * 100).toFixed(2);
+            return `${label}: ${percentage}%`;
+          },
+        },
+      },
+      datalabels: {
+        display: true,
+        formatter: (value) => {
+          let percentage = ((value / totalValue) * 100).toFixed(2);
+          return `${percentage}%`;
+        },
+        color: "#fff",
+        font: {
+          weight: "bold",
+          size: 14,
+        },
+      },
+    },
+  };
+
   return (
     <div className="flex justify-center items-center bg-white py-10 px-5 mb-12 cursor-pointer rounded-xl">
       <div className="w-full max-w-lg">
         <h2 className="text-center text-xl font-semibold mb-4">
           Customer Purchase Distribution
         </h2>
-        <Pie data={chartData} />
+        <Pie data={chartData} options={chartOptions} />
       </div>
     </div>
   );
