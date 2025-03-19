@@ -32,6 +32,7 @@ const Header = ({ activeHeading }) => {
   const [dropDown, setDropDown] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
+  const [listening, setListening] = useState(false);
 
   console.log("Header products are", allProducts);
 
@@ -39,6 +40,7 @@ const Header = ({ activeHeading }) => {
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
+    searchProducts(term);
 
     if (term) {
       const filteredProducts = allProducts && allProducts.filter((product) =>
@@ -49,6 +51,18 @@ const Header = ({ activeHeading }) => {
       setSearchData([]);
     }
   };
+
+  const searchProducts = (term) => {
+    if (term) {
+      const filteredProducts = allProducts.filter((product) =>
+        product.name.toLowerCase().includes(term.toLowerCase())
+      );
+      setSearchData(filteredProducts);
+    } else {
+      setSearchData([]);
+    }
+  };
+
   window.addEventListener("scroll", () => {
     if (window.scrollY > 70) {
       setActive(true);
