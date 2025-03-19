@@ -3,6 +3,7 @@ import {
   AiOutlineCreditCard,
   AiOutlineLogout,
   AiOutlineMessage,
+  AiOutlineGift, // Import the Rewards (Gift) icon
 } from "react-icons/ai";
 import { HiOutlineReceiptRefund, HiOutlineShoppingBag } from "react-icons/hi";
 import { RxPerson } from "react-icons/rx";
@@ -107,6 +108,19 @@ const ProfileSidebar = ({ setActive, active }) => {
           } 800px:block hidden`}
         >
           Address
+        </span>
+      </div>
+      <div
+        className="flex items-center cursor pointer w-full mb-8"
+        onClick={() => setActive(8)} // Set active to 8 for Rewards
+      >
+        <AiOutlineGift size={20} color={active === 8 ? "green" : ""} />
+        <span
+          className={`pl-3 ${
+            active === 8 ? "text-[green]" : ""
+          } 800px:block hidden`}
+        >
+          Rewards
         </span>
       </div>
       <div className="flex items-center cursor pointer w-full mb-8">

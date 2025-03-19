@@ -2,6 +2,7 @@ import ErrorHandler from "../Utils/ErrorHandler.js";
 import { Order } from "../models/order.model.js";
 import { Shop } from "../models/shop.model.js";
 import { Product } from "../models/product.model.js";
+import { User } from "../models/user.model.js"; 
 
 export const createOrder = async (req, res, next) => {
   try {
@@ -93,8 +94,14 @@ export const updateOrderStatus = async (req, res, next) => {
       order.paymentInfo.status = "Succeeded";
       const serviceCharge = order.totalPrice * 0.1;
       await updateSellerInfo(order.totalPrice - serviceCharge);
+
+       const rewardPoints = Math.floor(order.totalPrice * 0.01);
+       await User.findByIdAndUpdate(order.user._id, {
+         $inc: { points: rewardPoints },
+       });
     }
 
+  order.status = req.body.status;
     await order.save({ validateBeforeSave: false });
 
     res.status(200).json({
@@ -163,6 +170,11 @@ export const acceptOrderRefund = async (req, res, next) => {
     });
 
     if (req.body.status === "Refund Success") {
+      // Deduct reward points (5% of order price)
+      const refundPoints = Math.floor(order.totalPrice * 0.01);
+      await User.findByIdAndUpdate(order.user._id, {
+        $inc: { points: -refundPoints },
+      });
       order.cart.forEach(async (o) => {
         await updateOrder(o._id, o.qty);
       });
@@ -270,5 +282,31 @@ export const getProductCategoryDistribution = async (req, res, next) => {
   } catch (error) {
     console.error("Error in getProductCategoryDistribution:", error); // Log error details
     return next(new ErrorHandler(error.message, 500)); // Handle errors appropriately
+  }
+};
+
+
+
+
+export const getUserPoints = async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    // Find all delivered orders for the user
+    
+    const orders = await Order.find({
+      "user._id": userId,
+      status: "Delivered",
+    });
+
+    // Calculate total points dynamically
+    const totalPoints = orders.reduce(
+      (acc, order) => acc + Math.floor(order.totalPrice * 0.01),
+      0
+    );
+
+    res.status(200).json({ success: true, points: totalPoints });
+  } catch (error) {
+    return next(new ErrorHandler(error.message, 500));
   }
 };

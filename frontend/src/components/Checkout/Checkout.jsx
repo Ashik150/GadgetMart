@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/styles";
 import { Country, State } from "country-state-city";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
 import axios from "axios";
 import { server } from "../../server";
 import { toast } from "react-toastify";
@@ -21,38 +20,77 @@ const Checkout = () => {
   const [couponCode, setCouponCode] = useState("");
   const [couponCodeData, setCouponCodeData] = useState(null);
   const [discountPrice, setDiscountPrice] = useState(null);
+  const [useRewardPoints, setUseRewardPoints] = useState(false);
+  const [userPoints, setUserPoints] = useState(0);
+  const [pointsDiscount, setPointsDiscount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    // Fetch user points when component mounts
+    if (user && user._id) {
+      fetchUserPoints();
+    }
+  }, [user]);
+
+  // Fetch user points from the backend
+  const fetchUserPoints = async () => {
+    try {
+      const { data } = await axios.get(
+        `${server}/order/user-points/${user._id}`
+      );
+      setUserPoints(data.points);
+    } catch (error) {
+      console.error("Error fetching user points:", error);
+      toast.error("Could not fetch reward points");
+    }
+  };
+
+  // Calculate points discount when reward points usage changes
+  useEffect(() => {
+    if (useRewardPoints && userPoints >= 1000) {
+      // Convert points to BDT (100 points = 1 BDT)
+      const pointsValue = Math.floor(userPoints / 100);
+      setPointsDiscount(pointsValue);
+    } else {
+      setPointsDiscount(0);
+    }
+  }, [useRewardPoints, userPoints]);
 
   const paymentSubmit = () => {
-   if(address1 === "" || address2 === "" || zipCode === null || country === "" || city === ""){
-      toast.error("Please choose your delivery address!")
-   } else{
-    const shippingAddress = {
-      address1,
-      address2,
-      zipCode,
-      country,
-      city,
-    };
+    if (
+      address1 === "" ||
+      address2 === "" ||
+      zipCode === null ||
+      country === "" ||
+      city === ""
+    ) {
+      toast.error("Please choose your delivery address!");
+    } else {
+      const shippingAddress = {
+        address1,
+        address2,
+        zipCode,
+        country,
+        city,
+      };
 
-    const orderData = {
-      cart,
-      totalPrice,
-      subTotalPrice,
-      shipping,
-      discountPrice,
-      shippingAddress,
-      user,
+      const orderData = {
+        cart,
+        totalPrice,
+        subTotalPrice,
+        shipping,
+        discountPrice,
+        pointsDiscount, // Add points discount to order data
+        pointsUsed: useRewardPoints ? userPoints : 0, // Track points used
+        shippingAddress,
+        user,
+      };
+
+      // update local storage with the updated orders array
+      localStorage.setItem("latestOrder", JSON.stringify(orderData));
+      navigate("/payment");
     }
-
-    // update local storage with the updated orders array
-    localStorage.setItem("latestOrder", JSON.stringify(orderData));
-    navigate("/payment");
-   }
   };
 
   const subTotalPrice = cart.reduce(
@@ -95,13 +133,32 @@ const Checkout = () => {
     });
   };
 
+  const handlePointsToggle = () => {
+    if (userPoints < 1000 && !useRewardPoints) {
+      toast.error("You need at least 1000 points to redeem!");
+      return;
+    }
+    setUseRewardPoints(!useRewardPoints);
+  };
+
   const discountPercentenge = couponCodeData ? discountPrice : "";
 
-  const totalPrice = couponCodeData
-    ? (subTotalPrice + shipping - discountPercentenge).toFixed(2)
-    : (subTotalPrice + shipping).toFixed(2);
+  // Calculate total price with all discounts
+  const totalPrice = (() => {
+    let price = subTotalPrice + shipping;
 
-  console.log(discountPercentenge);
+    // Subtract coupon discount if available
+    if (couponCodeData && discountPrice) {
+      price -= discountPrice;
+    }
+
+    // Subtract points discount if points are being used
+    if (useRewardPoints && pointsDiscount > 0) {
+      price -= pointsDiscount;
+    }
+
+    return price.toFixed(2);
+  })();
 
   return (
     <div className="w-full flex flex-col items-center py-8">
@@ -132,6 +189,10 @@ const Checkout = () => {
             couponCode={couponCode}
             setCouponCode={setCouponCode}
             discountPercentenge={discountPercentenge}
+            userPoints={userPoints}
+            pointsDiscount={pointsDiscount}
+            useRewardPoints={useRewardPoints}
+            handlePointsToggle={handlePointsToggle}
           />
         </div>
       </div>
@@ -145,6 +206,7 @@ const Checkout = () => {
   );
 };
 
+// Other components remain the same
 const ShippingInfo = ({
   user,
   country,
@@ -160,7 +222,7 @@ const ShippingInfo = ({
   zipCode,
   setZipCode,
 }) => {
-    const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedAddress, setSelectedAddress] = useState(null);
   return (
     <div className="w-full 800px:w-[95%] bg-white rounded-md p-5 pb-8">
       <h5 className="text-[18px] font-[500]">Shipping Address</h5>
@@ -283,7 +345,7 @@ const ShippingInfo = ({
         <div>
           {user &&
             user.addresses.map((item, index) => (
-              <div className="w-full flex mt-1">
+              <div className="w-full flex mt-1" key={index}>
                 <input
                   type="checkbox"
                   className="mr-3"
@@ -315,6 +377,10 @@ const CartData = ({
   couponCode,
   setCouponCode,
   discountPercentenge,
+  userPoints,
+  pointsDiscount,
+  useRewardPoints,
+  handlePointsToggle,
 }) => {
   return (
     <div className="w-full bg-[#fff] rounded-md p-5 pb-8">
@@ -328,13 +394,65 @@ const CartData = ({
         <h5 className="text-[18px] font-[600]">{shipping.toFixed(2)} BDT</h5>
       </div>
       <br />
-      <div className="flex justify-between border-b pb-3">
-        <h3 className="text-[16px] font-[400] text-[#000000a4]">Discount:</h3>
+      <div className="flex justify-between">
+        <h3 className="text-[16px] font-[400] text-[#000000a4]">
+          Coupon Discount:
+        </h3>
         <h5 className="text-[18px] font-[600]">
-          - {discountPercentenge ? + discountPercentenge.toString() : 0} BDT
+          - {discountPercentenge ? discountPercentenge.toString() : 0} BDT
         </h5>
       </div>
-      <h5 className="text-[18px] font-[600] text-end pt-3">{totalPrice} BDT</h5>
+      <br />
+      {/* Reward points section */}
+      <div className="mt-2 mb-4 border-t pt-4">
+        <div className="flex justify-between items-center">
+          <div>
+            <h3 className="text-[16px] font-[500] text-[#000000d4]">
+              Your Reward Points:{" "}
+              <span className="font-[600] text-[#f63b60]">{userPoints}</span>
+            </h3>
+            <p className="text-[12px] text-[#00000094]">
+              (100 points = 1 BDT discount)
+            </p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              className="sr-only peer"
+              checked={useRewardPoints}
+              onChange={handlePointsToggle}
+              disabled={userPoints < 1000}
+            />
+            <div
+              className={`w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer ${
+                useRewardPoints ? "peer-checked:bg-[#f63b60]" : ""
+              } peer-disabled:bg-gray-300`}
+            ></div>
+            <span className="ml-3 text-sm font-medium text-gray-900">
+              Use Points
+            </span>
+          </label>
+        </div>
+        {userPoints < 1000 && (
+          <p className="text-[13px] text-[#f63b60] mt-1">
+            Need at least 1000 points to redeem!
+          </p>
+        )}
+        {useRewardPoints && pointsDiscount > 0 && (
+          <div className="flex justify-between mt-2">
+            <h3 className="text-[16px] font-[400] text-[#000000a4]">
+              Points Discount:
+            </h3>
+            <h5 className="text-[18px] font-[600] text-[#f63b60]">
+              - {pointsDiscount} BDT
+            </h5>
+          </div>
+        )}
+      </div>
+      <div className="flex justify-between border-t border-b py-3">
+        <h3 className="text-[16px] font-[500] text-[#000000a4]">Total:</h3>
+        <h5 className="text-[18px] font-[600]">{totalPrice} BDT</h5>
+      </div>
       <br />
       <form onSubmit={handleSubmit}>
         <input

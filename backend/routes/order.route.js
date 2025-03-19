@@ -1,5 +1,5 @@
 import express from 'express';
-import {createOrder,getAllOrdersOfUser,getAllOrdersOfSeller,updateOrderStatus,requestOrderRefund,acceptOrderRefund, getDeliveredOrders, getProductCategoryDistribution} from '../controllers/order.controller.js';
+import {createOrder,getAllOrdersOfUser,getAllOrdersOfSeller,updateOrderStatus,requestOrderRefund,acceptOrderRefund, getDeliveredOrders, getProductCategoryDistribution, getUserPoints} from '../controllers/order.controller.js';
 const router = express.Router();
 import { isSeller} from '../middleware/auth.middleware.js';
 
@@ -11,6 +11,8 @@ router.put("/order-refund/:id", requestOrderRefund);
 router.put("/order-refund-success/:id", isSeller, acceptOrderRefund);
 router.get("/delivered", getDeliveredOrders); 
 router.get("/get-category-distribution/:email", getProductCategoryDistribution);
+router.get("/user-points/:userId", getUserPoints);
+
 
 
 
