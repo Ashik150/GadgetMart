@@ -3,6 +3,7 @@ import {
   AiOutlineArrowRight,
   AiOutlineCamera,
   AiOutlineDelete,
+  AiOutlineGift,
 } from "react-icons/ai";
 import styles from "../../styles/styles";
 import { useState, useEffect } from "react";
@@ -16,14 +17,17 @@ import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import { MdOutlineTrackChanges } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserInformation, updatUserAddress, deleteUserAddress } from "../../redux/actions/user";
+import {
+  updateUserInformation,
+  updatUserAddress,
+  deleteUserAddress,
+} from "../../redux/actions/user";
 import { toast } from "react-toastify";
 import { loadUser } from "../../redux/actions/user";
 import axios from "axios";
-import { Country, State } from 'country-state-city';
+import { Country, State } from "country-state-city";
 import { set } from "mongoose";
 import { getAllOrdersOfUser } from "../../redux/actions/order";
-
 
 const ProfileContent = ({ active }) => {
   const { user } = useAuthStore();
@@ -46,7 +50,6 @@ const ProfileContent = ({ active }) => {
   //     dispatch({ type: "clearMessages" });
   //   }
   // }, [error, successMessage, dispatch]);
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -193,6 +196,12 @@ const ProfileContent = ({ active }) => {
       {active === 7 && (
         <div>
           <Address />
+        </div>
+      )}
+      {/* Rewards */}
+      {active === 8 && (
+        <div>
+          <UserRewards />
         </div>
       )}
     </div>
@@ -575,7 +584,6 @@ const Address = () => {
     }
   };
 
-
   const handleDelete = (item) => {
     const id = item._id;
     dispatch(deleteUserAddress(id));
@@ -771,6 +779,75 @@ const Address = () => {
           You not have any saved address!
         </h5>
       )}
+    </div>
+  );
+};
+
+// New component for Rewards
+const UserRewards = () => {
+  const { user } = useAuthStore();
+  const dispatch = useDispatch();
+  const [points, setPoints] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Fetch the user's points
+    const fetchUserPoints = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(
+          `${server}/order/user-points/${user._id}`,
+          { withCredentials: true }
+        );
+        if (response.data.success) {
+          setPoints(response.data.points);
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching user points:", error);
+        toast.error("Error fetching reward points");
+        setLoading(false);
+      }
+    };
+
+    if (user && user._id) {
+      fetchUserPoints();
+    }
+  }, [user]);
+
+  return (
+    <div className="w-full px-5">
+      <h1 className="text-[25px] font-[600] text-[#000000ba] pb-6">
+        My Rewards
+      </h1>
+
+      <div className="w-full bg-white rounded-lg shadow p-6">
+        <div className="flex items-center mb-4">
+          <AiOutlineGift size={30} className="text-green-600 mr-2" />
+          <h2 className="text-xl font-semibold">Reward Points</h2>
+        </div>
+
+        {loading ? (
+          <p className="text-gray-500">Loading your reward points...</p>
+        ) : (
+          <div className="mt-4">
+            <div className="bg-green-100 p-6 rounded-lg text-center">
+              <p className="text-lg text-gray-700 mb-2">Total Points Earned:</p>
+              <p className="text-4xl font-bold text-green-600">{points}</p>
+            </div>
+
+            <div className="mt-6 text-gray-600">
+              <p className="mb-2">
+                • Earn 5% of your order value as reward points on every purchase
+              </p>
+              <p className="mb-2">
+                • Points are calculated and added when your order is delivered
+              </p>
+              <p>• Points may be deducted if an order is refunded</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
