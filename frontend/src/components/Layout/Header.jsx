@@ -57,6 +57,9 @@ const Header = ({ activeHeading }) => {
     }
   });
 
+  // console.log("Header products are", allProducts);
+  // console.log("Header wishlist is", wishlist);
+  // console.log("Header cart is", cart
   return (
     <>
       <div className={styles.section}>
@@ -67,10 +70,18 @@ const Header = ({ activeHeading }) => {
                 src="https://shopo.quomodothemes.website/assets/images/logo.svg"
                 alt=""
               />
-            </Link> */}
+            </Link>
             <h1 className="text-[35px] leading-[1.2] 800px:text-[40px] text-[#4B5320] font-[600] capitalize">
-              Gadget Mart
-            </h1>
+              GadgetMart
+            </h1> */}
+            <div>
+              <Link to="/" onClick={() => window.location.reload()}>
+                <h1 className="text-[35px] leading-[1.2] 800px:text-[30px] text-[#4B5320] font-[600] capitalize ">
+                  GadgetMart
+                </h1>
+              </Link>
+            </div>
+
           </div>
 
           {/* Search box */}
