@@ -3,7 +3,7 @@ import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import {
   AiOutlineHeart,
-  AiOutlineAudio,
+  AiOutlineSearch,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { categoriesData } from "../../static/data";
@@ -32,7 +32,6 @@ const Header = ({ activeHeading }) => {
   const [dropDown, setDropDown] = useState(false);
   const [openCart, setOpenCart] = useState(false);
   const [openWishlist, setOpenWishlist] = useState(false);
-  const [listening, setListening] = useState(false);
 
   console.log("Header products are", allProducts);
 
@@ -40,7 +39,6 @@ const Header = ({ activeHeading }) => {
   const handleSearchChange = (e) => {
     const term = e.target.value;
     setSearchTerm(term);
-    searchProducts(term);
 
     if (term) {
       const filteredProducts = allProducts && allProducts.filter((product) =>
@@ -51,18 +49,6 @@ const Header = ({ activeHeading }) => {
       setSearchData([]);
     }
   };
-
-  const searchProducts = (term) => {
-    if (term) {
-      const filteredProducts = allProducts.filter((product) =>
-        product.name.toLowerCase().includes(term.toLowerCase())
-      );
-      setSearchData(filteredProducts);
-    } else {
-      setSearchData([]);
-    }
-  };
-
   window.addEventListener("scroll", () => {
     if (window.scrollY > 70) {
       setActive(true);
@@ -71,34 +57,9 @@ const Header = ({ activeHeading }) => {
     }
   });
 
-  const handleVoiceSearch = () => {
-    if (!("webkitSpeechRecognition" in window)) {
-      alert("Your browser does not support speech recognition.");
-      return;
-    }
-
-    const recognition = new window.webkitSpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.continuous = false;
-
-    recognition.onstart = () => {
-      setListening(true);
-    };
-
-    recognition.onresult = (event) => {
-      const voiceText = event.results[0][0].transcript;
-      setSearchTerm(voiceText);
-      searchProducts(voiceText);
-    };
-
-    recognition.onend = () => {
-      setListening(false);
-    };
-
-    recognition.start();
-  };
-
+  // console.log("Header products are", allProducts);
+  // console.log("Header wishlist is", wishlist);
+  // console.log("Header cart is", cart
   return (
     <>
       <div className={styles.section}>
@@ -109,10 +70,18 @@ const Header = ({ activeHeading }) => {
                 src="https://shopo.quomodothemes.website/assets/images/logo.svg"
                 alt=""
               />
-            </Link> */}
+            </Link>
             <h1 className="text-[35px] leading-[1.2] 800px:text-[40px] text-[#4B5320] font-[600] capitalize">
-              Gadget Mart
-            </h1>
+              GadgetMart
+            </h1> */}
+            <div>
+              <Link to="/" onClick={() => window.location.reload()}>
+                <h1 className="text-[35px] leading-[1.2] 800px:text-[30px] text-[#4B5320] font-[600] capitalize ">
+                  GadgetMart
+                </h1>
+              </Link>
+            </div>
+
           </div>
 
           {/* Search box */}
@@ -124,18 +93,10 @@ const Header = ({ activeHeading }) => {
               onChange={handleSearchChange}
               className="h-[40px] w-full px-2 border-[#006A4E] border-[2px] rounded-md"
             />
-            {/* <AiOutlineSearch
+            <AiOutlineSearch
               size={30}
               className="absolute right-2 top-1.5 cursor-pointer"
-            /> */}
-
-            <div>
-              <AiOutlineAudio
-                size={30}
-                className={`absolute right-2 top-1.5 cursor-pointer ${listening ? "text-red-500" : "text-gray-700"}`}
-                onClick={handleVoiceSearch}
-              />
-            </div>
+            />
 
             {/* Display search suggestions */}
             {searchData && searchData.length !== 0 ? (
