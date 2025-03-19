@@ -293,6 +293,7 @@ export const getUserPoints = async (req, res, next) => {
     const userId = req.params.userId;
 
     // Find all delivered orders for the user
+    
     const orders = await Order.find({
       "user._id": userId,
       status: "Delivered",
