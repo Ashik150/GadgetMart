@@ -71,6 +71,34 @@ const Header = ({ activeHeading }) => {
     }
   });
 
+  const handleVoiceSearch = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+      alert("Your browser does not support speech recognition.");
+      return;
+    }
+
+    const recognition = new window.webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+
+    recognition.onstart = () => {
+      setListening(true);
+    };
+
+    recognition.onresult = (event) => {
+      const voiceText = event.results[0][0].transcript;
+      setSearchTerm(voiceText);
+      searchProducts(voiceText);
+    };
+
+    recognition.onend = () => {
+      setListening(false);
+    };
+
+    recognition.start();
+  };
+
   return (
     <>
       <div className={styles.section}>
