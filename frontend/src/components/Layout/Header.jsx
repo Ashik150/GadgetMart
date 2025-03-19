@@ -3,7 +3,7 @@ import styles from "../../styles/styles";
 import { Link } from "react-router-dom";
 import {
   AiOutlineHeart,
-  AiOutlineSearch,
+  AiOutlineAudio,
   AiOutlineShoppingCart,
 } from "react-icons/ai";
 import { categoriesData } from "../../static/data";
@@ -82,10 +82,18 @@ const Header = ({ activeHeading }) => {
               onChange={handleSearchChange}
               className="h-[40px] w-full px-2 border-[#006A4E] border-[2px] rounded-md"
             />
-            <AiOutlineSearch
+            {/* <AiOutlineSearch
               size={30}
               className="absolute right-2 top-1.5 cursor-pointer"
-            />
+            /> */}
+
+            <div>
+              <AiOutlineAudio
+                size={30}
+                className={`absolute right-2 top-1.5 cursor-pointer ${listening ? "text-red-500" : "text-gray-700"}`}
+                onClick={handleVoiceSearch}
+              />
+            </div>
 
             {/* Display search suggestions */}
             {searchData && searchData.length !== 0 ? (
